@@ -14,6 +14,63 @@
         <servlet-name>CustomerManager</servlet-name>
         <servlet-class>presentation.CustomerManager</servlet-class>
     </servlet>
+    <!--Legal Customer Servlet-->
+    <servlet>
+        <servlet-name>ShowLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>show</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>EditLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>edit</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>IndexLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>show</param-value>
+        </init-param>
+    </servlet>
+
+    <!--Legal Customer Servlet-->
+    <servlet>
+        <servlet-name>IndexRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>index</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ShowRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>show</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>EditRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>edit</param-value>
+        </init-param>
+    </servlet>
+
+
 
 
 
@@ -25,4 +82,37 @@
         <servlet-name>CustomerManager</servlet-name>
         <url-pattern>/CustomerManager</url-pattern>
     </servlet-mapping>
+
+    <!--Legal customer servlet mapping-->
+    <servlet-mapping>
+        <servlet-name>ShowLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer/show</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>IndexLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>EditLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer/edit</url-pattern>
+    </servlet-mapping>
+
+    <!--Real customer servlet mapping -->
+    <servlet-mapping>
+        <servlet-name>ShowRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/show</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>IndexRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>EditRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/edit</url-pattern>
+    </servlet-mapping>
+
 </web-app>

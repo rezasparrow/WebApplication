@@ -1,6 +1,6 @@
 package presentation;
 
-import common.HtmlGenerator;
+import html.HtmlGenerator;
 
 import java.io.*;
 import javax.servlet.*;

@@ -1,7 +1,7 @@
 package presentation;
 
 
-import common.HtmlGenerator;
+import html.HtmlGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
