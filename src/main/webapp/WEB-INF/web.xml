@@ -70,6 +70,15 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>NewRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>new</param-value>
+        </init-param>
+    </servlet>
+
 
 
 
@@ -113,6 +122,11 @@
     <servlet-mapping>
         <servlet-name>EditRealCustomer</servlet-name>
         <url-pattern>/RealCustomer/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>NewRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/new</url-pattern>
     </servlet-mapping>
 
 </web-app>

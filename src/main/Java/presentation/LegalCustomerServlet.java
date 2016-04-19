@@ -17,11 +17,7 @@ import java.util.List;
  */
 public class LegalCustomerServlet extends HttpServlet {
 
-    private void show(){
-
-    }
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void newLegalCustomer(HttpServletRequest request , HttpServletResponse response) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("تعریف مشتری حقوقی");
@@ -33,6 +29,37 @@ public class LegalCustomerServlet extends HttpServlet {
         htmlGenerator.addToBody(body);
 
         printWriter.println(htmlGenerator.generate());
+    }
+
+    private void showView(HttpServletRequest request, HttpServletResponse response){
+
+    }
+
+    private void editView(HttpServletRequest request, HttpServletResponse response){
+
+    }
+
+    private void indexView(HttpServletRequest request, HttpServletResponse response){
+
+    }
+    private void delete(HttpServletRequest request, HttpServletResponse response){
+
+    }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = getServletConfig().getInitParameter("action");
+        response.setContentType("text/html; charset=UTF-8");
+
+        if("new".equalsIgnoreCase(action)){
+            newLegalCustomer(request,response);
+        }
+        else if ("showView".equalsIgnoreCase(action)) {
+            showView(request, response);
+        } else if (action.equalsIgnoreCase("editView")) {
+            editView(request, response);
+        } else {
+            indexView(request, response);
+        }
     }
 
     @Override

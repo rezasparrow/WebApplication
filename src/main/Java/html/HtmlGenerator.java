@@ -44,7 +44,7 @@ public class HtmlGenerator {
     }
 
     public static String generateForm(List<FormElement> formElements, String action) {
-        String formHtml = String.format("<form action=\"$s\" method=\"post\">", action);
+        String formHtml = String.format("<form action=\"%s\" method=\"post\">", action);
         for (FormElement formElement : formElements) {
             formHtml += String.format("<div class =\"%s\" >\n" +
                     "            <label for=\"%s\"> %s</label>\n" +

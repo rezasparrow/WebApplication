@@ -14,15 +14,16 @@ import java.io.PrintWriter;
  */
 public class CustomerManager extends HttpServlet {
 
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HtmlGenerator htmlGenerator ;
         htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("Customer Manager");
-        resp.setContentType("text/html; charset=UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
 
-        PrintWriter printWriter = resp.getWriter();
-        String type = req.getParameter("type");
+        PrintWriter printWriter = response.getWriter();
+        String type = request.getParameter("type");
         String customerType = "";
         if(type.equalsIgnoreCase("realCustomer")){
             customerType = "حقیقی";
@@ -34,8 +35,8 @@ public class CustomerManager extends HttpServlet {
         }
 
         String body = String.format("<div> \n" +
-                "<a href=\"create%s.html\" class=\"button\">تعریف مشتری %s جدید</a>\n" +
-                "<a href=\"/search%s.html\" class=\"button\">جستجوی مشتری %s</a>\n" +
+                "<a href=\"/%s\" class=\"button\">تعریف مشتری %s جدید</a>\n" +
+                "<a href=\"%s\" class=\"button\">جستجوی مشتری %s</a>\n" +
                 "</div>" , type ,customerType ,type , customerType);
         htmlGenerator.addToBody(body);
 
