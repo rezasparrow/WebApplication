@@ -15,7 +15,8 @@ public class HtmlGenerator {
         css ="";
         html = "<!DOCTYPE html>" +
                 "<html>" +
-                "<head>" +
+                "<head>" +"" +
+                "<link href=\"css/style.css\" rel=\"stylesheet\">"+
                 "%s" +
                 "</head>" +
                 "<body>" +

@@ -1,4 +1,4 @@
-package logic;
+package dataaccess;
 
 /**
  * Created by Dotin School1 on 4/17/2016.

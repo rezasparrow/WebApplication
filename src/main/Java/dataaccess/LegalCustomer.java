@@ -1,4 +1,4 @@
-package logic;
+package dataaccess;
 
 import exception.FieldRequiredException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

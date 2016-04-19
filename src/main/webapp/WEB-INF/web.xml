@@ -10,13 +10,19 @@
         <servlet-name>Home</servlet-name>
         <servlet-class>presentation.Home</servlet-class>
     </servlet>
-
-
+    <servlet>
+        <servlet-name>CustomerManager</servlet-name>
+        <servlet-class>presentation.CustomerManager</servlet-class>
+    </servlet>
 
 
 
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/Home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CustomerManager</servlet-name>
+        <url-pattern>/CustomerManager</url-pattern>
     </servlet-mapping>
 </web-app>

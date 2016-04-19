@@ -1,9 +1,8 @@
-package logic;
+package dataaccess;
 
 import exception.FieldRequiredException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
 import java.util.Date;
 
 /**

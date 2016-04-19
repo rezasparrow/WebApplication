@@ -20,11 +20,11 @@ public class Home extends HttpServlet {
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("home");
         String body = "<div>\n" +
-                "    <a class=\"button\" href=\"/legalCustomer\"> Legal Customer</a>\n" +
-                "    <a class=\"button\" href=\"/readCustomer\" > Real Customer</a>\n" +
+                "    <a class=\"button\" href=\"/CustomerManager?type=legal\"> Legal Customer</a>\n" +
+                "    <a class=\"button\" href=\"/CustomerManager?type=real\" > Real Customer</a>\n" +
                 "</div>";
         htmlGenerator.addToBody(body);
-        htmlGenerator.addCss("test.css");
+        htmlGenerator.addCss("style.css");
         // Set response content type
         response.setContentType("text/html");
 
