@@ -27,11 +27,11 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 Integer customer_number = generatedKeys.getInt(1);
-                String insertRealCustomerSql = "insert into real_customer" +
+                String insertLegalCustomerSql = "insert into real_customer" +
                         "(bar_code , company_name , registeration_day , customer_number)" +
                         " values(? ,? ,? ,? )";
 
-                statement = dataBaseManager.connection.prepareStatement(insertRealCustomerSql,
+                statement = dataBaseManager.connection.prepareStatement(insertLegalCustomerSql,
                         Statement.RETURN_GENERATED_KEYS);
 
                 statement.setString(1, legalCustomer.barCode);
@@ -73,8 +73,6 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
@@ -85,19 +83,19 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
             if (likeQuerySection.length() > 0) {
                 likeQuerySection += " and";
             }
-            likeQuerySection += String.format(" bar_code like '%%s%'", customer.barCode);
+            likeQuerySection += " bar_code like '%" +customer.barCode+"%'";
         }
         if (!"".equals(customer.companyName.trim())) {
             if (likeQuerySection.length() > 0) {
                 likeQuerySection += "and";
             }
-            likeQuerySection += String.format(" company_name like '%%s%'", customer.companyName);
+            likeQuerySection += " company_name like '%"+customer.companyName+"%'";
         }
         if (!"".equals(customer.customerNumber.trim())) {
             if (likeQuerySection.length() > 0) {
                 likeQuerySection += "and";
             }
-            likeQuerySection += String.format(" customer_number like '%%s%'", customer.customerNumber);
+            likeQuerySection += " customer_number like '%" +customer.customerNumber+"%'";
         }
         return sql + likeQuerySection;
     }
@@ -123,8 +121,6 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return realCustomers;

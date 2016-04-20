@@ -1,8 +1,10 @@
 package presentation;
 
+import dataaccess.LegalCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
 
 
 public class RealCustomerServlet extends HttpServlet {
@@ -231,6 +234,18 @@ public class RealCustomerServlet extends HttpServlet {
 
     }
 
+    private void create(HttpServletRequest request , HttpServletResponse response){
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String fatherName = request.getParameter("fatherName");
+        String nationalCode = request.getParameter("nationalCode");
+
+
+    }
+    private void search(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getServletConfig().getInitParameter("action");
@@ -247,5 +262,16 @@ public class RealCustomerServlet extends HttpServlet {
             indexView(request, response);
         }
 
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = getServletConfig().getInitParameter("action");
+
+        if("create".equalsIgnoreCase(action)){
+            create(request ,  response);
+        }else if("search".equalsIgnoreCase(action)){
+            search(request , response);
+        }
     }
 }

@@ -3,6 +3,7 @@ package dataaccess;
 import exception.FieldRequiredException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 
@@ -15,6 +16,16 @@ public class RealCustomer extends Customer {
     public Date birthDay;
     public String nationalCode;
     public Integer id;
+    private RealCustomerCRUD realCustomerCRUD;
+
+    public RealCustomer(String firstName, String lastName, String fatherName, Date birthDay, String nationalCode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fatherName = fatherName;
+        this.birthDay = birthDay;
+        this.nationalCode = nationalCode;
+        realCustomerCRUD = new RealCustomerCRUD();
+    }
 
     public RealCustomer(int id , String customerNumber, String firstName, String lastName, String fatherName, Date birthDay, String nationalCode)
              {
@@ -57,8 +68,8 @@ public class RealCustomer extends Customer {
         throw new NotImplementedException();
     }
 //    // TODO: 4/17/2016 Save Customer
-    public void save(){
-        throw new NotImplementedException();
+    public RealCustomer save() throws SQLException {
+        return realCustomerCRUD.create(this);
     }
 
 
