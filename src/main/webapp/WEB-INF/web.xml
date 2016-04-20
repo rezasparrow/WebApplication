@@ -42,6 +42,16 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>CreateLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>create</param-value>
+        </init-param>
+    </servlet>
+
+
     <!--Legal Customer Servlet-->
     <servlet>
         <servlet-name>IndexRealCustomer</servlet-name>
@@ -79,18 +89,16 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>CreateRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>new</param-value>
+        </init-param>
+    </servlet>
 
 
-
-
-    <servlet-mapping>
-        <servlet-name>Home</servlet-name>
-        <url-pattern>/Home</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CustomerManager</servlet-name>
-        <url-pattern>/CustomerManager</url-pattern>
-    </servlet-mapping>
 
     <!--Legal customer servlet mapping-->
     <servlet-mapping>
@@ -106,6 +114,11 @@
     <servlet-mapping>
         <servlet-name>EditLegalCustomer</servlet-name>
         <url-pattern>/LegalCustomer/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CreateLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer/create</url-pattern>
     </servlet-mapping>
 
     <!--Real customer servlet mapping -->
@@ -127,6 +140,11 @@
     <servlet-mapping>
         <servlet-name>NewRealCustomer</servlet-name>
         <url-pattern>/RealCustomer/new</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CreateRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/create</url-pattern>
     </servlet-mapping>
 
 </web-app>

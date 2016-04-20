@@ -3,30 +3,26 @@ package dataaccess;
 import exception.FieldRequiredException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Date;
+
 /**
  * Created by Dotin School1 on 4/17/2016.
  */
 public class LegalCustomer extends Customer{
-    private String companyName;
-    private String barCode;
-    public LegalCustomer(String customerNumber, String companyName, String barCode)
-            throws FieldRequiredException {
+    public int id;
+    public int customerNumber;
+    public String companyName;
+    public String barCode;
+    public Date registrationDay;
 
-        validateCustomerNumber();
-        if("".equals(companyName.trim())){
-            throw new FieldRequiredException("company name is required");
-        }
-        if("".equals(customerNumber.trim())){
-            throw new FieldRequiredException("customer number is required");
-        }
-        if("".equals(barCode.trim())){
-            throw new FieldRequiredException("last name is required");
-        }
-        validateBarCode();
+    public LegalCustomer(int id, int customerNumber, String companyName, String barCode, Date registrationDay) {
+        this.id = id;
         this.customerNumber = customerNumber;
-        this.barCode = barCode;
         this.companyName = companyName;
+        this.barCode = barCode;
+        this.registrationDay = registrationDay;
     }
+
     //TODO: write uniqueness of BarCode
     private void validateBarCode() {
         throw new NotImplementedException();

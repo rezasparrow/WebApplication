@@ -6,7 +6,4 @@ package dataaccess;
 public abstract class Customer  {
     protected String customerNumber;
 
-//    public Customer(String customerNumber){
-//        this.customerNumber = customerNumber;
-//    }
 }

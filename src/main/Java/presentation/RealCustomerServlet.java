@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-/**
- * Created by Dotin School1 on 4/19/2016.
- */
+
 public class RealCustomerServlet extends HttpServlet {
 
     private void newRealCustomer(HttpServletRequest request , HttpServletResponse response) throws IOException {
@@ -23,6 +21,10 @@ public class RealCustomerServlet extends HttpServlet {
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("تعریف مشتری حقوقی");
         List<FormElement> formElements = new ArrayList<FormElement>();
+        htmlGenerator.addToBody("<div class=\"header\">\n" +
+                "\n" +
+                "    </div>\n" +
+                "    <div class=\"content center\">");
         formElements.add(new FormElement("text", "firstName", "نام", ""));
         formElements.add(new FormElement("text", "lastName", "نام خانوادگی", ""));
         formElements.add(new FormElement("text", "fatherName", "نام پدر", ""));
@@ -30,6 +32,7 @@ public class RealCustomerServlet extends HttpServlet {
         formElements.add(new FormElement("date", "birthDay", "تاریخ تولد", ""));
 
         String body = HtmlGenerator.generateForm(formElements, "/Customer");
+        htmlGenerator.addToBody("</div>");
         htmlGenerator.addToBody(body);
 
         printWriter.println(htmlGenerator.generate());
@@ -55,7 +58,171 @@ public class RealCustomerServlet extends HttpServlet {
         PrintWriter  printWriter =response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
-        htmlGenerator.addToBody("index page");
+        String body= "\n" +
+                "    <div class=\"header\">\n" +
+                "\n" +
+                "    </div>\n" +
+                "    <div class=\"content\">\n" +
+                "\n" +
+                "        <a class=\"btn btn-sml\" href=\"/RealCustomer/new\"> تعریف مشتری حقیقی جدید</a>\n" +
+                "        <table class=\"table\">\n" +
+                "            <thead>\n" +
+                "            <tr>\n" +
+                "                <th>\n" +
+                "                    نام\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    نام خانوادگی\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    کد ملی\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    شناسه\n" +
+                "                </th>\n" +
+                "            </tr>\n" +
+                "            </thead>\n" +
+                "            <tbody>\n" +
+                "            <tr style=\"padding: 0px;\">\n" +
+                "                <td>\n" +
+                "                    <input class=\"input-control\">\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    <input class=\"input-control\">\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    <input class=\"input-control\">\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    <input class=\"input-control\">\n" +
+                "                </td>\n" +
+                "                <td><input value=\"search\" class=\"btn btn-sml\" type=\"submit\" /></td>\n" +
+                "            </tr>\n" +
+                "            </tbody>\n" +
+                "\n" +
+                "        </table>\n" +
+                "        <table class=\"table\">\n" +
+                "            <thead>\n" +
+                "            <tr>\n" +
+                "                <th>\n" +
+                "                    ردیف\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    نام\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    نام خانوادگی\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    کد ملی\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                "                    شناسه\n" +
+                "                </th>\n" +
+                "                <th></th>\n" +
+                "                <th></th>\n" +
+                "            </tr>\n" +
+                "            </thead>\n" +
+                "            <tbody>\n" +
+                "            <tr>\n" +
+                "                <td>\n" +
+                "                    ۱\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>edit</td>\n" +
+                "                <td>delete</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <td>\n" +
+                "                    ۲\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>edit</td>\n" +
+                "                <td>delete</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <td>\n" +
+                "                    ۳\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>edit</td>\n" +
+                "                <td>delete</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <td>\n" +
+                "                    ۴\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>edit</td>\n" +
+                "                <td>delete</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <td>\n" +
+                "                    ۵\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>\n" +
+                "                    reza\n" +
+                "                </td>\n" +
+                "                <td>edit</td>\n" +
+                "                <td>delete</td>\n" +
+                "            </tr>\n" +
+                "            </tbody>\n" +
+                "        </table>\n" +
+                "    </div>";
+        htmlGenerator.addToBody(body);
         printWriter.println(htmlGenerator.generate());
 
     }

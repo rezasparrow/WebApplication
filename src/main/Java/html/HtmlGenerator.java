@@ -16,11 +16,13 @@ public class HtmlGenerator {
         html = "<!DOCTYPE html>" +
                 "<html>" +
                 "<head>" + "" +
-                "<link href=\"css/style.css\" rel=\"stylesheet\">" +
+                "<link href=\"/css/style.css\" rel=\"stylesheet\">" +
                 "%s" +
                 "</head>" +
-                "<body>" +
+                "<body  style=\"background:#cccccc ;direction: rtl;\">" +
+                "<div class=\"container\" style=\"direction: rtl\">" +
                 "%s" +
+                "</div>"+
                 "</body>" +
                 "</html>";
         title = "";
@@ -46,9 +48,9 @@ public class HtmlGenerator {
     public static String generateForm(List<FormElement> formElements, String action) {
         String formHtml = String.format("<form action=\"%s\" method=\"post\">", action);
         for (FormElement formElement : formElements) {
-            formHtml += String.format("<div class =\"%s\" >\n" +
-                    "            <label for=\"%s\"> %s</label>\n" +
-                    "            <div><input id=\"%s\" type=\"%s\" name=\"%s\"></div>\n" +
+            formHtml += String.format("<div class =\"form-elm %s\" >\n" +
+                    "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
+                    "            <div  class=\"sml-col\"><input  class=\"input-control\" id=\"%s\" type=\"%s\" name=\"%s\"></div>\n" +
                     "        </div>", formElement.htmlClass, formElement.name, formElement.text, formElement.name, formElement.type, formElement.name);
         }
         formHtml += "<div>\n" +
