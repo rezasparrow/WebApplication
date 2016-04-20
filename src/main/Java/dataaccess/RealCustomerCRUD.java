@@ -15,38 +15,42 @@ import java.util.List;
 public class RealCustomerCRUD implements CRUD<RealCustomer> {
 
     @Override
-    public RealCustomer create(RealCustomer customer) throws SQLException {
-        DataBaseManager dataBaseManager = new DataBaseManager();
-        String insertCustomerSql = "insert into customer() values()";
-        PreparedStatement statement = dataBaseManager.connection.prepareStatement(insertCustomerSql,
-                Statement.RETURN_GENERATED_KEYS);
+    public RealCustomer create(RealCustomer customer) throws SQLException, IOException {
+        try (DataBaseManager dataBaseManager = new DataBaseManager()) {
 
-        int effectedRow = statement.executeUpdate();
-        if (effectedRow == 0) {
-            throw new SQLException("create customer failed; no row effected");
-        }
-        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                Integer customer_number = generatedKeys.getInt(1);
-                String insertRealCustomerSql = "insert into real_customer" +
-                        "(first_name , last_name , father_name , birthday , national_code ,customer_number)" +
-                        " values(? ,? ,? ,? ,?,? )";
+            String insertCustomerSql = "insert into customer() values()";
+            PreparedStatement statement = dataBaseManager.connection.prepareStatement(insertCustomerSql,
+                    Statement.RETURN_GENERATED_KEYS);
 
-                statement = dataBaseManager.connection.prepareStatement(insertRealCustomerSql,
-                        Statement.RETURN_GENERATED_KEYS);
-
-                statement.setString(1, customer.firstName);
-                statement.setString(2, customer.lastName);
-                statement.setString(3, customer.fatherName);
-                statement.setDate(4, new java.sql.Date(customer.birthDay.getTime()));
-                statement.setString(5, customer.nationalCode);
-                statement.setInt(6, customer_number);
-
-                dataBaseManager.connection.commit();
-                return findByCustomerNumber(customer_number);
-            } else {
-                throw new SQLException("Creating customer failed, no customer number obtained.");
+            int effectedRow = statement.executeUpdate();
+            if (effectedRow == 0) {
+                throw new SQLException("create customer failed; no row effected");
             }
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    Integer customer_number = generatedKeys.getInt(1);
+                    String insertRealCustomerSql = "insert into real_customer" +
+                            "(first_name , last_name , father_name , birthday , national_code ,customer_number)" +
+                            " values(? ,? ,? ,? ,?,? )";
+
+                    statement = dataBaseManager.connection.prepareStatement(insertRealCustomerSql,
+                            Statement.RETURN_GENERATED_KEYS);
+
+                    statement.setString(1, customer.firstName);
+                    statement.setString(2, customer.lastName);
+                    statement.setString(3, customer.fatherName);
+                    statement.setDate(4, new java.sql.Date(customer.birthDay.getTime()));
+                    statement.setString(5, customer.nationalCode);
+                    statement.setInt(6, customer_number);
+
+                    statement.executeUpdate();
+                    dataBaseManager.connection.commit();
+                    return findByCustomerNumber(customer_number);
+                } else {
+                    throw new SQLException("Creating customer failed, no customer number obtained.");
+                }
+            }
+
         }
     }
 

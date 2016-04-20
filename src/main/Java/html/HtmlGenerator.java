@@ -19,10 +19,10 @@ public class HtmlGenerator {
                 "<link href=\"/css/style.css\" rel=\"stylesheet\">" +
                 "%s" +
                 "</head>" +
-                "<body  style=\"background:#cccccc ;direction: rtl;\">" +
+                "<body  style=\"background:#cccccc;\">" +
                 "<div class=\"container\" style=\"direction: rtl\">" +
                 "%s" +
-                "</div>"+
+                "</div>" +
                 "</body>" +
                 "</html>";
         title = "";
@@ -48,10 +48,20 @@ public class HtmlGenerator {
     public static String generateForm(List<FormElement> formElements, String action) {
         String formHtml = String.format("<form action=\"%s\" method=\"post\">", action);
         for (FormElement formElement : formElements) {
-            formHtml += String.format("<div class =\"form-elm %s\" >\n" +
-                    "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
-                    "            <div  class=\"sml-col\"><input  class=\"input-control\" id=\"%s\" type=\"%s\" name=\"%s\"></div>\n" +
-                    "        </div>", formElement.htmlClass, formElement.name, formElement.text, formElement.name, formElement.type, formElement.name);
+            if (formElement.errorText.isEmpty()) {
+                formHtml += String.format("<div class =\"form-elm\" >\n" +
+                        "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
+                        "            <div  class=\"sml-col\"><input  class=\"input-control\" id=\"%s\" type=\"%s\" name=\"%s\" value=\"%s\"></div>\n" +
+                        "        </div>", formElement.name, formElement.text, formElement.name, formElement.type, formElement.name , formElement.value);
+
+            } else {
+                formHtml += String.format("<div class =\"form-elm\" >\n" +
+                        "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
+                        "            <div  class=\"sml-col \"><input  class=\"input-control has-error\" id=\"%s\" type=\"%s\" name=\"%s\" value=\"%s\">" +
+                        "<div style=\"color:red;\" > %s </div></div>\n" +
+                        "        </div>", formElement.name, formElement.text, formElement.name, formElement.type, formElement.name,formElement.value , formElement.errorText);
+
+            }
         }
         formHtml += "<div>\n" +
                 "            <input type=\"submit\" value=\"ایجاد\">\n" +

@@ -94,7 +94,7 @@
         <servlet-class>presentation.RealCustomerServlet</servlet-class>
         <init-param>
             <param-name>action</param-name>
-            <param-value>new</param-value>
+            <param-value>create</param-value>
         </init-param>
     </servlet>
 

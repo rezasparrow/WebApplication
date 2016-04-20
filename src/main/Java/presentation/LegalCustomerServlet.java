@@ -12,9 +12,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Dotin School1 on 4/19/2016.
- */
+
 public class LegalCustomerServlet extends HttpServlet {
 
     private void newLegalCustomer(HttpServletRequest request , HttpServletResponse response) throws IOException {
@@ -22,8 +20,8 @@ public class LegalCustomerServlet extends HttpServlet {
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("تعریف مشتری حقوقی");
         List<FormElement> formElements = new ArrayList<FormElement>();
-        formElements.add(new FormElement("text" , "companyName" , "نام" , ""));
-        formElements.add(new FormElement("text" , "barCode" , "کد اقتصادی" , ""));
+        formElements.add(new FormElement("text" , "companyName" , "نام" , request.getParameter("companyName"), ""));
+        formElements.add(new FormElement("text" , "barCode" , "کد اقتصادی" ,request.getParameter("barCode"), ""));
 
         String body = HtmlGenerator.generateForm(formElements , "/CreateLegalCustomer");
         htmlGenerator.addToBody(body);

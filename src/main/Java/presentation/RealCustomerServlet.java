@@ -3,12 +3,15 @@ package presentation;
 import dataaccess.LegalCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
+import javafx.util.Pair;
+import logic.RealCustomerController;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,10 +19,23 @@ import java.util.Enumeration;
 import java.util.List;
 
 
-
 public class RealCustomerServlet extends HttpServlet {
 
-    private void newRealCustomer(HttpServletRequest request , HttpServletResponse response) throws IOException {
+    private String getError(String key, List<Pair<String, String>> errors) {
+        String error = "";
+        for (Pair<String, String> err : errors) {
+            if (err.getKey().equalsIgnoreCase(key)) {
+                if (error.length() > 0) {
+                    error += err.getValue() + "<br>";
+                } else {
+                    error += err.getValue();
+                }
+            }
+        }
+        return error;
+    }
+
+    private void newRealCustomer(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("تعریف مشتری حقوقی");
@@ -28,13 +44,13 @@ public class RealCustomerServlet extends HttpServlet {
                 "\n" +
                 "    </div>\n" +
                 "    <div class=\"content center\">");
-        formElements.add(new FormElement("text", "firstName", "نام", ""));
-        formElements.add(new FormElement("text", "lastName", "نام خانوادگی", ""));
-        formElements.add(new FormElement("text", "fatherName", "نام پدر", ""));
-        formElements.add(new FormElement("text", "nationalCode", "کد ملی", ""));
-        formElements.add(new FormElement("date", "birthDay", "تاریخ تولد", ""));
+        formElements.add(new FormElement("text", "firstName", "نام", request.getParameter("firstName") ,  getError("firstName" , errors)));
+        formElements.add(new FormElement("text", "lastName", "نام خانوادگی",request.getParameter("lastName") ,  getError("lastName" , errors)));
+        formElements.add(new FormElement("text", "fatherName", "نام پدر",request.getParameter("fatherName") ,  getError("fatherName" , errors)));
+        formElements.add(new FormElement("text", "nationalCode", "کد ملی",request.getParameter("nationalCode") ,  getError("nationalCode" , errors)));
+        formElements.add(new FormElement("date", "birthday", "تاریخ تولد", request.getParameter("birthday") , getError("birthday" , errors)));
 
-        String body = HtmlGenerator.generateForm(formElements, "/Customer");
+        String body = HtmlGenerator.generateForm(formElements, "/RealCustomer/create");
         htmlGenerator.addToBody("</div>");
         htmlGenerator.addToBody(body);
 
@@ -42,7 +58,7 @@ public class RealCustomerServlet extends HttpServlet {
     }
 
     private void showView(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter  printWriter =response.getWriter();
+        PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
         htmlGenerator.addToBody("show page");
@@ -50,7 +66,7 @@ public class RealCustomerServlet extends HttpServlet {
     }
 
     private void editView(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter  printWriter =response.getWriter();
+        PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
         htmlGenerator.addToBody("edit page");
@@ -58,10 +74,10 @@ public class RealCustomerServlet extends HttpServlet {
     }
 
     private void indexView(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter  printWriter =response.getWriter();
+        PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
-        String body= "\n" +
+        String body = "\n" +
                 "    <div class=\"header\">\n" +
                 "\n" +
                 "    </div>\n" +
@@ -234,14 +250,18 @@ public class RealCustomerServlet extends HttpServlet {
 
     }
 
-    private void create(HttpServletRequest request , HttpServletResponse response){
+    private void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String fatherName = request.getParameter("fatherName");
         String nationalCode = request.getParameter("nationalCode");
-
+        String birthday = request.getParameter("birthday");
+        RealCustomerController realCustomerController = new RealCustomerController();
+        List<Pair<String, String>> errors = realCustomerController.save(firstName, lastName, fatherName, nationalCode, birthday);
+        newRealCustomer(request , response , errors);
 
     }
+
     private void search(HttpServletRequest request, HttpServletResponse response) {
 
     }
@@ -251,12 +271,11 @@ public class RealCustomerServlet extends HttpServlet {
         String action = getServletConfig().getInitParameter("action");
         response.setContentType("text/html; charset=UTF-8");
 
-        if("new".equalsIgnoreCase(action)){
-            newRealCustomer(request,response);
+        if ("new".equalsIgnoreCase(action)) {
+            newRealCustomer(request, response, new ArrayList<Pair<String, String>>());
         } else if ("edit".equalsIgnoreCase(action)) {
             editView(request, response);
-        }
-        else if ("showView".equalsIgnoreCase(action)) {
+        } else if ("showView".equalsIgnoreCase(action)) {
             showView(request, response);
         } else {
             indexView(request, response);
@@ -266,12 +285,13 @@ public class RealCustomerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
         String action = getServletConfig().getInitParameter("action");
 
-        if("create".equalsIgnoreCase(action)){
-            create(request ,  response);
-        }else if("search".equalsIgnoreCase(action)){
-            search(request , response);
+        if ("create".equalsIgnoreCase(action)) {
+            create(request, response);
+        } else if ("search".equalsIgnoreCase(action)) {
+            search(request, response);
         }
     }
 }

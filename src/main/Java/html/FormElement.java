@@ -7,12 +7,19 @@ public class FormElement {
     public String type;
     public String name;
     public String text;
-    public String htmlClass;
+    public String errorText;
+    public String value;
 
-    public FormElement(String type, String name, String text, String htmlClass) {
+    public FormElement(String type, String name, String text, String value, String error) {
         this.type = type;
         this.name = name;
         this.text = text;
-        this.htmlClass = htmlClass;
+        this.errorText = error;
+        if(value != null)
+        {
+            this.value = value;
+        }else{
+            this.value = "";
+        }
     }
 }

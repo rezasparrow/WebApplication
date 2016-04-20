@@ -3,6 +3,9 @@ package dataaccess;
 import exception.FieldRequiredException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -23,8 +26,17 @@ public class LegalCustomer extends Customer{
     }
 
     //TODO: write uniqueness of BarCode
-    private void validateBarCode() {
-        throw new NotImplementedException();
+    private boolean validateBarCodeUnique(String barCode) throws SQLException, IOException {
+        try(
+                DataBaseManager dataBaseManager = new DataBaseManager()
+        ) {
+            ResultSet resultSet =  dataBaseManager.statement.executeQuery("select count(*) from legal_customer where bar_code='"+barCode.trim()+"'");
+            if( resultSet.next()){
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        }
+        return false;
     }
 
 

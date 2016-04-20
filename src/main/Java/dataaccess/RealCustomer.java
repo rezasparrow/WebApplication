@@ -3,9 +3,10 @@ package dataaccess;
 import exception.FieldRequiredException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-
 
 
 public class RealCustomer extends Customer {
@@ -27,26 +28,7 @@ public class RealCustomer extends Customer {
         realCustomerCRUD = new RealCustomerCRUD();
     }
 
-    public RealCustomer(int id , String customerNumber, String firstName, String lastName, String fatherName, Date birthDay, String nationalCode)
-             {
-
-//        validateCustomerNumber();
-//        if("".equals(firstName.trim())){
-//            throw new FieldRequiredException("first name is required");
-//        }
-//        if("".equals(customerNumber.trim())){
-//            throw new FieldRequiredException("customer number is required");
-//        }
-//        if("".equals(lastName.trim())){
-//            throw new FieldRequiredException("last name is required");
-//        }
-//        if("".equals(fatherName.trim())){
-//            throw new FieldRequiredException("father name is required");
-//        }
-//        if("".equals(nationalCode.trim())){
-//            throw new FieldRequiredException("national code is required");
-//        }
-        validateNationalCode();
+    public RealCustomer(int id, String customerNumber, String firstName, String lastName, String fatherName, Date birthDay, String nationalCode) {
         this.customerNumber = customerNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -54,39 +36,53 @@ public class RealCustomer extends Customer {
         this.birthDay = birthDay;
         this.nationalCode = nationalCode;
     }
-//TODO: write uniqueness of national code
-    private void validateNationalCode() {
-        throw new NotImplementedException();
+
+    public static boolean validateNationalCode(String nationalCode) throws SQLException, IOException {
+
+        try (
+                DataBaseManager dataBaseManager = new DataBaseManager()
+        ) {
+            String sql = "select count(*) from real_customer where national_code='" + nationalCode.trim() + "'";
+            ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        }
+        return false;
     }
 
 
-    public void validate(){
+    public void validate() {
 
-    };
-//ToDo : validate uniqueness of customer number
-    private boolean validateCustomerNumber(){
+    }
+
+
+    //ToDo : validate uniqueness of customer number
+    private boolean validateCustomerNumber() {
         throw new NotImplementedException();
     }
-//    // TODO: 4/17/2016 Save Customer
-    public RealCustomer save() throws SQLException {
+
+    //    // TODO: 4/17/2016 Save Customer
+    public RealCustomer save() throws SQLException, IOException {
         return realCustomerCRUD.create(this);
     }
 
 
-//    // TODO: 4/17/2016 edit Customer
-    public void edit(){
+    //    // TODO: 4/17/2016 edit Customer
+    public void edit() {
         throw new NotImplementedException();
 
     }
 
-//    // TODO: 4/17/2016 getAll Customer
-    public void getAll(){
+    //    // TODO: 4/17/2016 getAll Customer
+    public void getAll() {
         throw new NotImplementedException();
 
     }
 
-//    // TODO: 4/17/2016 delete Customer
-    public void delete(){
+    //    // TODO: 4/17/2016 delete Customer
+    public void delete() {
         throw new NotImplementedException();
 
     }
