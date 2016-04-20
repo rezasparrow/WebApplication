@@ -1,6 +1,5 @@
 package dataaccess;
 
-import exception.FieldRequiredException;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -48,7 +47,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         }
     }
 
-    private LegalCustomer findByCustomerNumber(int customer_number) throws SQLException, ClassNotFoundException {
+    private LegalCustomer findByCustomerNumber(Integer customer_number) throws SQLException, ClassNotFoundException {
         DataBaseManager dataBaseManager = new DataBaseManager();
         ResultSet resultSet = dataBaseManager.statement.executeQuery("select * from legal_customer where customer_number=" + customer_number);
         if (resultSet.next()) {
@@ -58,7 +57,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
             Date registrationDay = resultSet.getDate("registration_day");
             String customerNumber = resultSet.getString("customer_number");
 
-            return new LegalCustomer(id, customer_number, companyName, barCode, registrationDay);
+            return new LegalCustomer(id, customerNumber, companyName, barCode, registrationDay);
         }
         return null;
     }
@@ -114,7 +113,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
                     String barCode = resultSet.getString("bar_code");
                     String companyName = resultSet.getString("company_name");
                     Date registrationDay = resultSet.getDate("registration_day");
-                    int customerNumber = resultSet.getInt("customer_number");
+                    String customerNumber = resultSet.getString("customer_number");
                     int id = resultSet.getInt("id");
 
                     LegalCustomer realCustomer = new LegalCustomer(id, customerNumber , companyName, barCode, registrationDay);

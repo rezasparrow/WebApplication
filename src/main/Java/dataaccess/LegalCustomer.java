@@ -10,12 +10,11 @@ import java.util.Date;
  */
 public class LegalCustomer extends Customer{
     public int id;
-    public int customerNumber;
     public String companyName;
     public String barCode;
     public Date registrationDay;
 
-    public LegalCustomer(int id, int customerNumber, String companyName, String barCode, Date registrationDay) {
+    public LegalCustomer(int id, String customerNumber, String companyName, String barCode, Date registrationDay) {
         this.id = id;
         this.customerNumber = customerNumber;
         this.companyName = companyName;
