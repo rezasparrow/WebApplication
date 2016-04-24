@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
+public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
 
     private LegalCustomer getLegalCustomer(ResultSet resultSet) throws SQLException {
         String companyName = resultSet.getString("company_name");
@@ -58,7 +58,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         }
     }
 
-    private LegalCustomer findByCustomerNumber(Integer customer_number) throws SQLException, ClassNotFoundException {
+    private LegalCustomer findByCustomerNumber(Integer customer_number) throws SQLException {
         DataBaseManager dataBaseManager = new DataBaseManager();
         ResultSet resultSet = dataBaseManager.statement.executeQuery("select * from legal_customer where customer_number=" + customer_number);
         if (resultSet.next()) {
@@ -74,19 +74,13 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLException, IOException {
         String sql = "delete from legal_customer where id=" + id;
-        try {
-            try (DataBaseManager dataBaseManager = new DataBaseManager();) {
-                dataBaseManager.statement.executeQuery(sql);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        try (DataBaseManager dataBaseManager = new DataBaseManager();) {
+            dataBaseManager.statement.executeQuery(sql);
         }
     }
-
 
 
     @Override
@@ -99,9 +93,9 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         List<LegalCustomer> realCustomers = new ArrayList<>();
         try {
             try (DataBaseManager dataBaseManager = new DataBaseManager()) {
-                String sql = "select * from legal_customer where id = ?" ;
+                String sql = "select * from legal_customer where id = ?";
                 PreparedStatement preparedStatement = dataBaseManager.connection.prepareStatement(sql);
-                preparedStatement.setInt(1 , id);
+                preparedStatement.setInt(1, id);
 
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
@@ -124,19 +118,19 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
             if (likeQuerySection.length() > 0) {
                 likeQuerySection += " and";
             }
-            likeQuerySection += " bar_code like '%" +customer.barCode+"%'";
+            likeQuerySection += " bar_code like '%" + customer.barCode + "%'";
         }
         if (!"".equals(customer.companyName.trim())) {
             if (likeQuerySection.length() > 0) {
                 likeQuerySection += "and";
             }
-            likeQuerySection += " company_name like '%"+customer.companyName+"%'";
+            likeQuerySection += " company_name like '%" + customer.companyName + "%'";
         }
         if (!"".equals(customer.customerNumber.trim())) {
             if (likeQuerySection.length() > 0) {
                 likeQuerySection += "and";
             }
-            likeQuerySection += " customer_number like '%" +customer.customerNumber+"%'";
+            likeQuerySection += " customer_number like '%" + customer.customerNumber + "%'";
         }
         return sql + likeQuerySection;
     }
@@ -146,7 +140,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         List<LegalCustomer> realCustomers = new ArrayList<>();
         try {
             try (DataBaseManager dataBaseManager = new DataBaseManager();) {
-                String sql = generateLikeQuery( customer);
+                String sql = generateLikeQuery(customer);
                 ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
                 while (resultSet.next()) {
                     String barCode = resultSet.getString("bar_code");
@@ -155,7 +149,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
                     String customerNumber = resultSet.getString("customer_number");
                     int id = resultSet.getInt("id");
 
-                    LegalCustomer realCustomer = new LegalCustomer(id, customerNumber , companyName, barCode, registrationDay);
+                    LegalCustomer realCustomer = new LegalCustomer(id, customerNumber, companyName, barCode, registrationDay);
                     realCustomers.add(realCustomer);
                 }
             }
@@ -169,12 +163,12 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
 
 
     @Override
-    public LegalCustomer update(int id, LegalCustomer customer) throws SQLException, ClassNotFoundException {
+    public LegalCustomer update(int id, LegalCustomer customer) throws SQLException {
         DataBaseManager dataBaseManager = new DataBaseManager();
         String sqlCommand = "update legal_customer set company_name=? , bar_code=? where id=?";
 
         PreparedStatement statement = dataBaseManager.connection.prepareStatement(sqlCommand);
-        statement.setInt(3 , id);
+        statement.setInt(3, id);
         statement.setString(2, customer.companyName);
         statement.setString(1, customer.barCode);
         statement.executeUpdate();

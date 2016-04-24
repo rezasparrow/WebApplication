@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 
 public class RealCustomer extends Customer {
@@ -26,6 +27,7 @@ public class RealCustomer extends Customer {
         this.birthDay = birthDay;
         this.nationalCode = nationalCode;
         realCustomerCRUD = new RealCustomerCRUD();
+        this.id = 0;
     }
 
     public RealCustomer(int id, String customerNumber, String firstName, String lastName, String fatherName, Date birthDay, String nationalCode) {
@@ -57,36 +59,22 @@ public class RealCustomer extends Customer {
         return customerNumber;
     }
 
-    public void validate() {
 
-    }
-
-
-    //ToDo : validate uniqueness of customer number
-    private boolean validateCustomerNumber() {
-        throw new NotImplementedException();
-    }
-
-    //    // TODO: 4/17/2016 Save Customer
     public RealCustomer save() throws SQLException, IOException {
         return realCustomerCRUD.create(this);
     }
 
 
-    //    // TODO: 4/17/2016 update Customer
     public void update() throws SQLException {
         realCustomerCRUD.update(id , this);
     }
 
-    //    // TODO: 4/17/2016 getAll Customer
-    public void getAll() {
-        throw new NotImplementedException();
-
+    public List<RealCustomer> getAll() {
+        return realCustomerCRUD.all();
     }
 
-    //    // TODO: 4/17/2016 delete Customer
-    public void delete() {
-        throw new NotImplementedException();
+    public void delete() throws IOException, SQLException {
+        realCustomerCRUD.delete(id);
 
     }
 

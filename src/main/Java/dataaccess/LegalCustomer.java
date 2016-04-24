@@ -16,6 +16,7 @@ public class LegalCustomer extends Customer{
     public String companyName;
     public String barCode;
     public Date registrationDay;
+    private LegalCustomerCRUD legalCustomerCRUD;
 
     public LegalCustomer(int id, String customerNumber, String companyName, String barCode, Date registrationDay) {
         this.id = id;
@@ -23,6 +24,7 @@ public class LegalCustomer extends Customer{
         this.companyName = companyName;
         this.barCode = barCode;
         this.registrationDay = registrationDay;
+        legalCustomerCRUD = new LegalCustomerCRUD();
     }
 
     public LegalCustomer( String companyName, String barCode, Date registrationDay) {
@@ -31,8 +33,8 @@ public class LegalCustomer extends Customer{
         this.registrationDay = registrationDay;
     }
 
-    //TODO: write uniqueness of BarCode
-    private boolean validateBarCodeUnique(String barCode) throws SQLException, IOException {
+
+    public static boolean validateBarCodeUnique(String barCode) throws SQLException, IOException {
         try(
                 DataBaseManager dataBaseManager = new DataBaseManager()
         ) {
@@ -45,33 +47,21 @@ public class LegalCustomer extends Customer{
         return false;
     }
 
-
-
-    //ToDo : validate uniqueness of customer number
-    private boolean validateCustomerNumber(){
-        throw new NotImplementedException();
+    public void update() throws SQLException {
+        legalCustomerCRUD.update(id , this);
     }
+
     //    // TODO: 4/17/2016 Save Customer
     public void save(){
         throw new NotImplementedException();
     }
 
-
-    //    // TODO: 4/17/2016 update Customer
-    public void edit(){
-        throw new NotImplementedException();
-
-    }
-
-    //    // TODO: 4/17/2016 getAll Customer
     public void getAll(){
-        throw new NotImplementedException();
+        legalCustomerCRUD.all();
 
     }
 
-    //    // TODO: 4/17/2016 delete Customer
-    public void delete(){
-        throw new NotImplementedException();
-
+    public void delete() throws IOException, SQLException {
+        legalCustomerCRUD.delete(id);
     }
 }
