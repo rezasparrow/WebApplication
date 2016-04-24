@@ -35,6 +35,7 @@ public class RealCustomer extends Customer {
         this.fatherName = fatherName;
         this.birthDay = birthDay;
         this.nationalCode = nationalCode;
+        this.id = id;
     }
 
     public static boolean validateNationalCode(String nationalCode) throws SQLException, IOException {
@@ -52,6 +53,9 @@ public class RealCustomer extends Customer {
         return false;
     }
 
+    public String getCustomerNumber(){
+        return customerNumber;
+    }
 
     public void validate() {
 

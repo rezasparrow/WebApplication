@@ -6,4 +6,5 @@ package dataaccess;
 public abstract class Customer  {
     protected String customerNumber;
 
+
 }

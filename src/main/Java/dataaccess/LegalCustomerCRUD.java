@@ -76,6 +76,13 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         }
     }
 
+
+
+    @Override
+    public List<LegalCustomer> all() {
+        return null;
+    }
+
     private String generateLikeQuery(LegalCustomer customer) {
         String sql = "Select * from real_customer ";
         String likeQuerySection = "";
@@ -101,7 +108,7 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
     }
 
     @Override
-    public List<LegalCustomer> read(LegalCustomer customer) {
+    public List<LegalCustomer> all(LegalCustomer customer) {
         List<LegalCustomer> realCustomers = new ArrayList<>();
         try {
             try (DataBaseManager dataBaseManager = new DataBaseManager();) {

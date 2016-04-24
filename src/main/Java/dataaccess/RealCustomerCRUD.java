@@ -111,24 +111,27 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
         return sql + likeQuerySection;
     }
 
+    private RealCustomer getRealCustomer(ResultSet resultSet) throws SQLException {
+        String firstName = resultSet.getString("first_name");
+        String lastName = resultSet.getString("last_name");
+        String fatherName = resultSet.getString("father_name");
+        Date birthDay = resultSet.getDate("birthday");
+        String nationalCode = resultSet.getString("national_code");
+        String customerNumber = resultSet.getString("customer_number");
+        int id = resultSet.getInt("id");
+
+        return new RealCustomer(id, customerNumber, firstName, lastName, fatherName, birthDay, nationalCode);
+    }
     @Override
-    public List<RealCustomer> read(RealCustomer customer) {
+    public List<RealCustomer> all(RealCustomer customer) {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
             try (DataBaseManager dataBaseManager = new DataBaseManager()) {
                 String sql = generateLikeQuery(customer);
                 ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
                 while (resultSet.next()) {
-                    String firstName = resultSet.getString("first_name");
-                    String lastName = resultSet.getString("last_name");
-                    String fatherName = resultSet.getString("father_name");
-                    Date birthDay = resultSet.getDate("birthday");
-                    String nationalCode = resultSet.getString("national_code");
-                    String customerNumber = resultSet.getString("customer_number");
-                    int id = resultSet.getInt("id");
 
-                    RealCustomer realCustomer = new RealCustomer(id, customerNumber, firstName, lastName, fatherName, birthDay, nationalCode);
-                    realCustomers.add(realCustomer);
+                    realCustomers.add(getRealCustomer(resultSet));
                 }
             }
         } catch (IOException e) {
@@ -155,5 +158,25 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
         dataBaseManager.connection.commit();
 
         return findByCustomerNumber(id);
+    }
+
+    @Override
+    public  List<RealCustomer> all(){
+        List<RealCustomer> realCustomers = new ArrayList<>();
+        try {
+            try (DataBaseManager dataBaseManager = new DataBaseManager()) {
+                String sql = "select * from real_customer";
+                ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
+                while (resultSet.next()) {
+
+                    realCustomers.add(getRealCustomer(resultSet));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return realCustomers;
     }
 }

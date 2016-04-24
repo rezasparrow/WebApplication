@@ -1,6 +1,7 @@
 package logic;
 
 import dataaccess.RealCustomer;
+import dataaccess.RealCustomerCRUD;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -54,6 +55,9 @@ public class RealCustomerController implements Validatable {
             if(RealCustomer.validateNationalCode(nationalCode)){
                 errors.add(new Pair<String, String>("nationalCode" , "national code must be unique"));
             }
+            if(nationalCode.length() != 10){
+                errors.add(new Pair<String, String>("nationalCode" , "size of national code must be 10"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             errors.add(new Pair<String, String>("base", "Unknown error"));
@@ -80,6 +84,11 @@ public class RealCustomerController implements Validatable {
 
     public boolean isValid() {
         return false;
+    }
+
+    public List<RealCustomer> all(){
+        RealCustomerCRUD realCustomerCRUD = new RealCustomerCRUD();
+        return realCustomerCRUD.all();
     }
 
     /* TODO add validation for all data */

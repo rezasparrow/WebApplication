@@ -1,6 +1,8 @@
 package presentation;
 
 import dataaccess.LegalCustomer;
+import dataaccess.RealCustomer;
+import dataaccess.RealCustomerCRUD;
 import html.FormElement;
 import html.HtmlGenerator;
 import javafx.util.Pair;
@@ -34,7 +36,9 @@ public class RealCustomerServlet extends HttpServlet {
         }
         return error;
     }
+    private void partialForm(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors , String action){
 
+    }
     private void newRealCustomer(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
@@ -73,10 +77,27 @@ public class RealCustomerServlet extends HttpServlet {
         printWriter.println(htmlGenerator.generate());
     }
 
-    private void indexView(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void indexView(HttpServletRequest request, HttpServletResponse response , List<RealCustomer> realCustomers) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
+        String tableRows = "";
+        for (int i = 0 ; i < realCustomers.size() ; ++i){
+            tableRows+= String.format("<tr>" +
+                    "<td>%s</td>" +
+                    "<td>%s</td>" +
+                    "<td>%s</td>" +
+                    "<td>%s</td>" +
+                    "<td>%s</td>" +
+                    "<td>%s</td>" +
+                    "<td><a href=\"/RealCustomer/edit?id=%s\">edit</a></td>\n" +
+                    "<td><a href=\"/RealCustomer/delete?id=%s\">delete</a></td>\n" +
+                    "</tr>"
+                    , i ,realCustomers.get(i).getCustomerNumber() ,realCustomers.get(i).firstName ,
+                    realCustomers.get(i).lastName,realCustomers.get(i).fatherName
+                    ,realCustomers.get(i).nationalCode ,
+                    realCustomers.get(i).id , realCustomers.get(i).id);
+        }
         String body = "\n" +
                 "    <div class=\"header\">\n" +
                 "\n" +
@@ -127,117 +148,26 @@ public class RealCustomerServlet extends HttpServlet {
                 "                    ردیف\n" +
                 "                </th>\n" +
                 "                <th>\n" +
+                "                    شماره مشتری\n" +
+                "                </th>\n" +
+                "                <th>\n" +
                 "                    نام\n" +
                 "                </th>\n" +
                 "                <th>\n" +
-                "                    نام خانوادگی\n" +
+                " نام خانوادگی\n" +
+                "                </th>\n" +
+                "                <th>\n" +
+                " نام پدر\n" +
                 "                </th>\n" +
                 "                <th>\n" +
                 "                    کد ملی\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                "                    شناسه\n" +
                 "                </th>\n" +
                 "                <th></th>\n" +
                 "                <th></th>\n" +
                 "            </tr>\n" +
                 "            </thead>\n" +
                 "            <tbody>\n" +
-                "            <tr>\n" +
-                "                <td>\n" +
-                "                    ۱\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>edit</td>\n" +
-                "                <td>delete</td>\n" +
-                "            </tr>\n" +
-                "            <tr>\n" +
-                "                <td>\n" +
-                "                    ۲\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>edit</td>\n" +
-                "                <td>delete</td>\n" +
-                "            </tr>\n" +
-                "            <tr>\n" +
-                "                <td>\n" +
-                "                    ۳\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>edit</td>\n" +
-                "                <td>delete</td>\n" +
-                "            </tr>\n" +
-                "            <tr>\n" +
-                "                <td>\n" +
-                "                    ۴\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>edit</td>\n" +
-                "                <td>delete</td>\n" +
-                "            </tr>\n" +
-                "            <tr>\n" +
-                "                <td>\n" +
-                "                    ۵\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    reza\n" +
-                "                </td>\n" +
-                "                <td>edit</td>\n" +
-                "                <td>delete</td>\n" +
-                "            </tr>\n" +
+                tableRows+
                 "            </tbody>\n" +
                 "        </table>\n" +
                 "    </div>";
@@ -270,6 +200,7 @@ public class RealCustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getServletConfig().getInitParameter("action");
         response.setContentType("text/html; charset=UTF-8");
+        RealCustomerController realCustomerController = new RealCustomerController();
 
         if ("new".equalsIgnoreCase(action)) {
             newRealCustomer(request, response, new ArrayList<Pair<String, String>>());
@@ -278,7 +209,8 @@ public class RealCustomerServlet extends HttpServlet {
         } else if ("showView".equalsIgnoreCase(action)) {
             showView(request, response);
         } else {
-            indexView(request, response);
+            List<RealCustomer> realCustomers = realCustomerController.all();
+            indexView(request, response , realCustomers);
         }
 
     }
