@@ -25,6 +25,12 @@ public class LegalCustomer extends Customer{
         this.registrationDay = registrationDay;
     }
 
+    public LegalCustomer( String companyName, String barCode, Date registrationDay) {
+        this.companyName = companyName;
+        this.barCode = barCode;
+        this.registrationDay = registrationDay;
+    }
+
     //TODO: write uniqueness of BarCode
     private boolean validateBarCodeUnique(String barCode) throws SQLException, IOException {
         try(

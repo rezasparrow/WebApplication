@@ -99,8 +99,11 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
         List<LegalCustomer> realCustomers = new ArrayList<>();
         try {
             try (DataBaseManager dataBaseManager = new DataBaseManager()) {
-                String sql = "select * from real_customer where id = " + id ;
-                ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
+                String sql = "select * from legal_customer where id = ?" ;
+                PreparedStatement preparedStatement = dataBaseManager.connection.prepareStatement(sql);
+                preparedStatement.setInt(1 , id);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
 
                     realCustomers.add(getLegalCustomer(resultSet));

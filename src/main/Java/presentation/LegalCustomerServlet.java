@@ -5,6 +5,7 @@ import dataaccess.RealCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
 import javafx.util.Pair;
+import logic.LegalCustomerController;
 import logic.RealCustomerController;
 
 import javax.servlet.ServletException;
@@ -61,21 +62,21 @@ public class LegalCustomerServlet extends HttpServlet {
     private void newLegalCustomer(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
-        htmlGenerator.addTitle("تعریف مشتری حقوقی");
+        htmlGenerator.addTitle("تعریف مشتری حقیقی");
         DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
 
-        Date birthday = null;
+        Date registrationDay = null;
         try {
-            String date = request.getParameter("birthday");
+            String date = request.getParameter("registrationDay");
             if (date != null && !date.isEmpty()) {
-                birthday = df.parse(date);
+                registrationDay = df.parse(date);
             }
 
         } catch (ParseException e) {
-            birthday = null;
+            registrationDay = null;
         }
-        RealCustomer customer = new RealCustomer(request.getParameter("firstName"), request.getParameter("lastName"), request.getParameter("fatherName"),
-                birthday, request.getParameter("nationalCode"));
+        LegalCustomer customer = new LegalCustomer(request.getParameter("companyName"), request.getParameter("barCode"),
+                registrationDay);
 
         htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/create", customer));
         htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
@@ -116,12 +117,12 @@ public class LegalCustomerServlet extends HttpServlet {
             HtmlGenerator htmlGenerator = new HtmlGenerator();
             int id = Integer.parseInt(idString);
             htmlGenerator.addTitle("ویرایش مشتری حقیقی");
-            List<RealCustomer> realCustomers = RealCustomerController.find(id);
-            if (realCustomers.size() == 0) {
+            List<LegalCustomer> legalCustomers = LegalCustomerController.find(id);
+            if (legalCustomers.size() == 0) {
                 redirectToRealCustomer(response);
             } else {
 
-                htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/update?id=" + id, realCustomers.get(0)));
+                htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/update?id=" + id, legalCustomers.get(0)));
                 htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
 
             }
