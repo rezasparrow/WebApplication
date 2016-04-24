@@ -18,8 +18,8 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
     public RealCustomer create(RealCustomer customer) throws SQLException, IOException {
         try (DataBaseManager dataBaseManager = new DataBaseManager()) {
 
-            String insertCustomerSql = "insert into customer() values()";
-            PreparedStatement statement = dataBaseManager.connection.prepareStatement(insertCustomerSql,
+            String insertCustomerSqlCommand = "insert into customer() values()";
+            PreparedStatement statement = dataBaseManager.connection.prepareStatement(insertCustomerSqlCommand,
                     Statement.RETURN_GENERATED_KEYS);
 
             int effectedRow = statement.executeUpdate();

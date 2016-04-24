@@ -1,5 +1,6 @@
 package presentation;
 
+import dataaccess.Customer;
 import dataaccess.LegalCustomer;
 import dataaccess.RealCustomer;
 import dataaccess.RealCustomerCRUD;
@@ -16,9 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 public class RealCustomerServlet extends HttpServlet {
@@ -36,27 +38,49 @@ public class RealCustomerServlet extends HttpServlet {
         }
         return error;
     }
-    private void partialForm(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors , String action){
 
+    private String partialForm(List<Pair<String, String>> errors, String action, RealCustomer customer) {
+        List<FormElement> formElements = new ArrayList<FormElement>();
+        String birthday = "" ;
+        if(customer.birthDay == null){
+            birthday = "";
+        }else{
+            birthday = customer.birthDay.toString();
+        }
+        formElements.add(new FormElement("text", "firstName", "نام", customer.firstName, getError("firstName", errors)));
+        formElements.add(new FormElement("text", "lastName", "نام خانوادگی", customer.lastName, getError("lastName", errors)));
+        formElements.add(new FormElement("text", "fatherName", "نام پدر", customer.fatherName, getError("fatherName", errors)));
+        formElements.add(new FormElement("text", "nationalCode", "کد ملی", customer.nationalCode, getError("nationalCode", errors)));
+        formElements.add(new FormElement("date", "birthday", "تاریخ تولد",birthday, getError("birthday", errors)));
+
+        return HtmlGenerator.generateForm(formElements, action);
     }
+
     private void newRealCustomer(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("تعریف مشتری حقوقی");
-        List<FormElement> formElements = new ArrayList<FormElement>();
         htmlGenerator.addToBody("<div class=\"header\">\n" +
                 "\n" +
                 "    </div>\n" +
                 "    <div class=\"content center\">");
-        formElements.add(new FormElement("text", "firstName", "نام", request.getParameter("firstName") ,  getError("firstName" , errors)));
-        formElements.add(new FormElement("text", "lastName", "نام خانوادگی",request.getParameter("lastName") ,  getError("lastName" , errors)));
-        formElements.add(new FormElement("text", "fatherName", "نام پدر",request.getParameter("fatherName") ,  getError("fatherName" , errors)));
-        formElements.add(new FormElement("text", "nationalCode", "کد ملی",request.getParameter("nationalCode") ,  getError("nationalCode" , errors)));
-        formElements.add(new FormElement("date", "birthday", "تاریخ تولد", request.getParameter("birthday") , getError("birthday" , errors)));
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
-        String body = HtmlGenerator.generateForm(formElements, "/RealCustomer/create");
+        Date birthday = null;
+        try {
+            String date = request.getParameter("birthday") ;
+            if(date != null && !date.isEmpty()) {
+                birthday = df.parse(date);
+            }
+
+        } catch (ParseException e) {
+            birthday = null;
+        }
+        RealCustomer customer = new RealCustomer(request.getParameter("firstName"), request.getParameter("lastName"), request.getParameter("fatherName"),
+                birthday, request.getParameter("nationalCode"));
+
         htmlGenerator.addToBody("</div>");
-        htmlGenerator.addToBody(body);
+        htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/create", customer));
 
         printWriter.println(htmlGenerator.generate());
     }
@@ -70,6 +94,10 @@ public class RealCustomerServlet extends HttpServlet {
     }
 
     private void editView(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String idString =  request.getParameter("id");
+        if (idString == null){
+
+        }
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
@@ -77,26 +105,26 @@ public class RealCustomerServlet extends HttpServlet {
         printWriter.println(htmlGenerator.generate());
     }
 
-    private void indexView(HttpServletRequest request, HttpServletResponse response , List<RealCustomer> realCustomers) throws IOException {
+    private void indexView(HttpServletRequest request, HttpServletResponse response, List<RealCustomer> realCustomers) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
         htmlGenerator.addTitle("مشتری حقیقی");
         String tableRows = "";
-        for (int i = 0 ; i < realCustomers.size() ; ++i){
-            tableRows+= String.format("<tr>" +
-                    "<td>%s</td>" +
-                    "<td>%s</td>" +
-                    "<td>%s</td>" +
-                    "<td>%s</td>" +
-                    "<td>%s</td>" +
-                    "<td>%s</td>" +
-                    "<td><a href=\"/RealCustomer/edit?id=%s\">edit</a></td>\n" +
-                    "<td><a href=\"/RealCustomer/delete?id=%s\">delete</a></td>\n" +
-                    "</tr>"
-                    , i ,realCustomers.get(i).getCustomerNumber() ,realCustomers.get(i).firstName ,
-                    realCustomers.get(i).lastName,realCustomers.get(i).fatherName
-                    ,realCustomers.get(i).nationalCode ,
-                    realCustomers.get(i).id , realCustomers.get(i).id);
+        for (int i = 0; i < realCustomers.size(); ++i) {
+            tableRows += String.format("<tr>" +
+                            "<td>%s</td>" +
+                            "<td>%s</td>" +
+                            "<td>%s</td>" +
+                            "<td>%s</td>" +
+                            "<td>%s</td>" +
+                            "<td>%s</td>" +
+                            "<td><a href=\"/RealCustomer/edit?id=%s\">edit</a></td>\n" +
+                            "<td><a href=\"/RealCustomer/delete?id=%s\">delete</a></td>\n" +
+                            "</tr>"
+                    , i, realCustomers.get(i).getCustomerNumber(), realCustomers.get(i).firstName,
+                    realCustomers.get(i).lastName, realCustomers.get(i).fatherName
+                    , realCustomers.get(i).nationalCode,
+                    realCustomers.get(i).id, realCustomers.get(i).id);
         }
         String body = "\n" +
                 "    <div class=\"header\">\n" +
@@ -167,7 +195,7 @@ public class RealCustomerServlet extends HttpServlet {
                 "            </tr>\n" +
                 "            </thead>\n" +
                 "            <tbody>\n" +
-                tableRows+
+                tableRows +
                 "            </tbody>\n" +
                 "        </table>\n" +
                 "    </div>";
@@ -188,7 +216,13 @@ public class RealCustomerServlet extends HttpServlet {
         String birthday = request.getParameter("birthday");
         RealCustomerController realCustomerController = new RealCustomerController();
         List<Pair<String, String>> errors = realCustomerController.save(firstName, lastName, fatherName, nationalCode, birthday);
-        newRealCustomer(request , response , errors);
+        if(errors.size() == 0){
+            response.setStatus(response.SC_MOVED_PERMANENTLY);
+            response.setHeader("Location" , "/RealCustomer");
+        }else{
+            newRealCustomer(request, response, errors);
+
+        }
 
     }
 
@@ -210,7 +244,7 @@ public class RealCustomerServlet extends HttpServlet {
             showView(request, response);
         } else {
             List<RealCustomer> realCustomers = realCustomerController.all();
-            indexView(request, response , realCustomers);
+            indexView(request, response, realCustomers);
         }
 
     }
