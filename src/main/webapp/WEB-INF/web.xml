@@ -6,14 +6,7 @@
     <display-name>Archetype Created Web Application</display-name>
 
 
-    <servlet>
-        <servlet-name>Home</servlet-name>
-        <servlet-class>presentation.Home</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>CustomerManager</servlet-name>
-        <servlet-class>presentation.CustomerManager</servlet-class>
-    </servlet>
+
     <!--Legal Customer Servlet-->
     <servlet>
         <servlet-name>ShowLegalCustomer</servlet-name>
@@ -48,6 +41,15 @@
         <init-param>
             <param-name>action</param-name>
             <param-value>create</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>UpdateLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>update</param-value>
         </init-param>
     </servlet>
 
@@ -98,6 +100,24 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>UpdateRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>update</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>DeleteRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>delete</param-value>
+        </init-param>
+    </servlet>
+
 
 
     <!--Legal customer servlet mapping-->
@@ -119,6 +139,11 @@
     <servlet-mapping>
         <servlet-name>CreateLegalCustomer</servlet-name>
         <url-pattern>/LegalCustomer/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>UpdateLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer/update</url-pattern>
     </servlet-mapping>
 
     <!--Real customer servlet mapping -->
@@ -145,6 +170,16 @@
     <servlet-mapping>
         <servlet-name>CreateRealCustomer</servlet-name>
         <url-pattern>/RealCustomer/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>UpdateRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DeleteRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/delete</url-pattern>
     </servlet-mapping>
 
 </web-app>

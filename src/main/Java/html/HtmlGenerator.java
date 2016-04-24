@@ -21,6 +21,9 @@ public class HtmlGenerator {
                 "</head>" +
                 "<body  style=\"background:#cccccc;\">" +
                 "<div class=\"container\" style=\"direction: rtl\">" +
+                "<div class=\"header\">\n" +
+                "\n" +
+                "    </div>\n" +
                 "%s" +
                 "</div>" +
                 "</body>" +
@@ -52,14 +55,14 @@ public class HtmlGenerator {
                 formHtml += String.format("<div class =\"form-elm\" >\n" +
                         "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
                         "            <div  class=\"sml-col\"><input  class=\"input-control\" id=\"%s\" type=\"%s\" name=\"%s\" value=\"%s\"></div>\n" +
-                        "        </div>", formElement.name, formElement.text, formElement.name, formElement.type, formElement.name , formElement.value);
+                        "        </div>", formElement.name, formElement.text, formElement.name, formElement.type, formElement.name, formElement.value);
 
             } else {
                 formHtml += String.format("<div class =\"form-elm\" >\n" +
                         "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
                         "            <div  class=\"sml-col \"><input  class=\"input-control has-error\" id=\"%s\" type=\"%s\" name=\"%s\" value=\"%s\">" +
                         "<div style=\"color:red;\" > %s </div></div>\n" +
-                        "        </div>", formElement.name, formElement.text, formElement.name, formElement.type, formElement.name,formElement.value , formElement.errorText);
+                        "        </div>", formElement.name, formElement.text, formElement.name, formElement.type, formElement.name, formElement.value, formElement.errorText);
 
             }
         }
@@ -68,5 +71,16 @@ public class HtmlGenerator {
                 "        </div>\n" +
                 "    </form>";
         return formHtml;
+    }
+
+    public static String showData(List<FormElement> formElements) {
+        String data = "";
+        for (FormElement formElement : formElements) {
+            data += String.format("<div class =\"form-elm\" >" +
+                    "            <label  class=\"label-control\" for=\"%s\"> %s</label>\n" +
+                    "            <div  class=\"sml-col\">%s</div>\n" +
+                    "        </div>" ,formElement.name , formElement.text  , formElement.value);
+        }
+        return  "<div>"+data+" </div>";
     }
 }

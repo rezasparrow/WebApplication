@@ -51,7 +51,7 @@ public class LegalCustomer extends Customer{
     }
 
 
-    //    // TODO: 4/17/2016 edit Customer
+    //    // TODO: 4/17/2016 update Customer
     public void edit(){
         throw new NotImplementedException();
 

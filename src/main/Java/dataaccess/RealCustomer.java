@@ -73,10 +73,9 @@ public class RealCustomer extends Customer {
     }
 
 
-    //    // TODO: 4/17/2016 edit Customer
-    public void edit() {
-        throw new NotImplementedException();
-
+    //    // TODO: 4/17/2016 update Customer
+    public void update() throws SQLException {
+        realCustomerCRUD.update(id , this);
     }
 
     //    // TODO: 4/17/2016 getAll Customer

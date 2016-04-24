@@ -12,6 +12,17 @@ import java.util.List;
 
 
 public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
+
+    private LegalCustomer getLegalCustomer(ResultSet resultSet) throws SQLException {
+        String companyName = resultSet.getString("company_name");
+        String barCode = resultSet.getString("bar_code");
+        Date registrationDay = resultSet.getDate("registration_day");
+        String customerNumber = resultSet.getString("customer_number");
+        int id = resultSet.getInt("id");
+
+        return new LegalCustomer(id, customerNumber, companyName, barCode, registrationDay);
+    }
+
     @Override
     public LegalCustomer create(LegalCustomer customer) throws SQLException, ClassNotFoundException {
         LegalCustomer legalCustomer = (LegalCustomer) customer;
@@ -81,6 +92,26 @@ public class LegalCustomerCRUD implements CRUD <LegalCustomer> {
     @Override
     public List<LegalCustomer> all() {
         return null;
+    }
+
+    @Override
+    public List<LegalCustomer> findById(int id) {
+        List<LegalCustomer> realCustomers = new ArrayList<>();
+        try {
+            try (DataBaseManager dataBaseManager = new DataBaseManager()) {
+                String sql = "select * from real_customer where id = " + id ;
+                ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
+                while (resultSet.next()) {
+
+                    realCustomers.add(getLegalCustomer(resultSet));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return realCustomers;
     }
 
     private String generateLikeQuery(LegalCustomer customer) {
