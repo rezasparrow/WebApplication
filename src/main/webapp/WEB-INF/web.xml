@@ -71,6 +71,15 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>DeleteLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>delete</param-value>
+        </init-param>
+    </servlet>
+
 
     <!--Legal Customer Servlet-->
     <servlet>
@@ -136,6 +145,15 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>SearchRealCustomer</servlet-name>
+        <servlet-class>presentation.RealCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>search</param-value>
+        </init-param>
+    </servlet>
+
 
 
     <!--Legal customer servlet mapping-->
@@ -174,6 +192,11 @@
         <url-pattern>/LegalCustomer/search</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>DeleteLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer/delete</url-pattern>
+    </servlet-mapping>
+
     <!--Real customer servlet mapping -->
     <servlet-mapping>
         <servlet-name>ShowRealCustomer</servlet-name>
@@ -208,6 +231,11 @@
     <servlet-mapping>
         <servlet-name>DeleteRealCustomer</servlet-name>
         <url-pattern>/RealCustomer/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SearchRealCustomer</servlet-name>
+        <url-pattern>/RealCustomer/search</url-pattern>
     </servlet-mapping>
 
 </web-app>

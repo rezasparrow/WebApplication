@@ -131,8 +131,13 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
             Connection dataBaseConnection = DataBaseManager.getConnection();
-            String sql = generateLikeQuery(customer);
-            ResultSet resultSet = dataBaseConnection.createStatement().executeQuery(sql);
+            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(
+                    "SELECT * FROM  real_customer where first_name like ? and last_name like ? and national_code like ? and customer_number like ?");
+            preparedStatement.setString(1 ,"%" + customer.firstName + "%");
+            preparedStatement.setString(2 , "%" + customer.lastName + "%");
+            preparedStatement.setString(3 , "%" + customer.nationalCode + "%");
+            preparedStatement.setString(4 , "%" + customer.customerNumber + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
                 realCustomers.add(getRealCustomer(resultSet));
@@ -183,7 +188,7 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
             Connection dataBaseConnection = DataBaseManager.getConnection();
-            String sql = "select * from real_customer where id = >?";
+            String sql = "select * from real_customer where id = ?";
             PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
