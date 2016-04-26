@@ -132,4 +132,9 @@ public class LegalCustomerController {
         }
         return errors;
     }
+
+    public static List<LegalCustomer> find(LegalCustomer legalCustomer){
+        LegalCustomerCRUD legalCustomerCRUD = new LegalCustomerCRUD();
+        return legalCustomerCRUD.all(legalCustomer);
+    }
 }

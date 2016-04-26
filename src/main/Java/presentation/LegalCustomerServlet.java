@@ -232,8 +232,14 @@ public class LegalCustomerServlet extends HttpServlet {
 
     }
 
-    private void search(HttpServletRequest request, HttpServletResponse response) {
-
+    private void search(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<LegalCustomer> legalCustomers = new ArrayList<>();
+        String barCode = request.getParameter("barCode");
+        String companyName = request.getParameter("companyName");
+        String customerNumber = request.getParameter("customerNumber");
+        LegalCustomer legalCustomer = new LegalCustomer(0 ,customerNumber , companyName , barCode , null);
+        legalCustomers = LegalCustomerController.find(legalCustomer);
+        indexView(response  , legalCustomers);
     }
 
     @Override

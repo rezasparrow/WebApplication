@@ -1,5 +1,7 @@
 package logic;
 
+import dataaccess.LegalCustomer;
+import dataaccess.LegalCustomerCRUD;
 import dataaccess.RealCustomer;
 import dataaccess.RealCustomerCRUD;
 import javafx.util.Pair;
@@ -151,5 +153,10 @@ public class RealCustomerController  {
             errors.add(new Pair<>("base", "real customer can not find"));
         }
         return errors;
+    }
+
+    public static List<RealCustomer> find(RealCustomer realCustomer){
+        RealCustomerCRUD realCustomerCRUD= new RealCustomerCRUD();
+        return realCustomerCRUD.all(realCustomer);
     }
 }

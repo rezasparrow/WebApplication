@@ -42,22 +42,22 @@ public class RealCustomer extends Customer {
 
     public static boolean validateNationalCode(String nationalCode) throws SQLException, IOException {
 
-        try (
-                Connection dataBaseConnection = DataBaseManager.getConnection()
-        ) {
-            String sql = "select count(*) from real_customer where national_code=?";
-            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
-            preparedStatement.setString(1 , nationalCode);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                return count > 0;
-            }
+
+        Connection dataBaseConnection = DataBaseManager.getConnection();
+
+        String sql = "select count(*) from real_customer where national_code=?";
+        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
+        preparedStatement.setString(1, nationalCode);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            int count = resultSet.getInt(1);
+            return count > 0;
         }
+
         return false;
     }
 
-    public String getCustomerNumber(){
+    public String getCustomerNumber() {
         return customerNumber;
     }
 
@@ -68,7 +68,7 @@ public class RealCustomer extends Customer {
 
 
     public void update() throws SQLException {
-        realCustomerCRUD.update(id , this);
+        realCustomerCRUD.update(id, this);
     }
 
     public List<RealCustomer> getAll() {

@@ -1,5 +1,6 @@
 package dataaccess;
 
+import javax.xml.crypto.Data;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,29 +18,37 @@ public class DataBaseManager implements Closeable {
     //  Database credentials
     static final String USER = "root";
     static final String PASS = "reza";
+    private static Connection connection = null;
+    private static Object lock = new Object();
 
-    public Connection connection;
-    public Statement statement;
 
-    public DataBaseManager() throws SQLException {
+    private DataBaseManager() throws SQLException {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        connection = DriverManager.getConnection(DB_URL,USER,PASS);
+        connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
-        statement = connection.createStatement();
+    }
+
+    public static Connection getConnection() throws SQLException {
+        synchronized (lock) {
+
+            if (connection == null) {
+                new DataBaseManager();
+            }
+            connection.setAutoCommit(true);
+            return connection;
+
+        }
     }
 
     public void close() throws IOException {
-        try {
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         try {
             connection.close();
+            connection = null;
         } catch (SQLException e) {
             e.printStackTrace();
         }

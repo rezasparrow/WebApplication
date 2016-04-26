@@ -1,9 +1,12 @@
 package presentation;
 
+import dataaccess.Customer;
+import dataaccess.LegalCustomer;
 import dataaccess.RealCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
 import javafx.util.Pair;
+import logic.LegalCustomerController;
 import logic.RealCustomerController;
 
 import javax.servlet.ServletException;
@@ -157,6 +160,7 @@ public class RealCustomerServlet extends HttpServlet {
                 "    <div class=\"content\">\n" +
                 "\n" +
                 "        <a class=\"btn btn-sml\" href=\"/RealCustomer/new\"> تعریف مشتری حقیقی جدید</a>\n" +
+                "<form action=\"/RealCustomer/search\" method=\"post\">"+
                 "        <table class=\"table\">\n" +
                 "            <thead>\n" +
                 "            <tr>\n" +
@@ -170,27 +174,28 @@ public class RealCustomerServlet extends HttpServlet {
                 "                    کد ملی\n" +
                 "                </th>\n" +
                 "                <th>\n" +
-                "                    شناسه\n" +
+                "                    شماره مشتری\n" +
                 "                </th>\n" +
                 "            </tr>\n" +
                 "            </thead>\n" +
                 "            <tbody>\n" +
                 "            <tr style=\"padding: 0px;\">\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"firstName\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"lastName\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"nationalCode\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"customerNumber\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td><input value=\"search\" class=\"btn btn-sml\" type=\"submit\" /></td>\n" +
                 "            </tr>\n" +
-                "            </tbody>\n" +
+                "            </tbody>" +
+                "</form>\n" +
                 "\n" +
                 "        </table>\n" +
                 "        <table class=\"table\">\n" +
@@ -252,8 +257,16 @@ public class RealCustomerServlet extends HttpServlet {
 
     }
 
-    private void search(HttpServletRequest request, HttpServletResponse response) {
-
+    private void search(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<RealCustomer> realCustomers = new ArrayList<>();
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String fatherName = request.getParameter("fatherName");
+        String nationalCode = request.getParameter("nationalCode");
+        String customerNumber = request.getParameter("customerNumber");
+        RealCustomer realCustomer = new RealCustomer(0 , customerNumber , firstName ,lastName , fatherName , null , nationalCode);
+        realCustomers = RealCustomerController.find(realCustomer);
+        indexView(response  , realCustomers);
     }
 
     @Override

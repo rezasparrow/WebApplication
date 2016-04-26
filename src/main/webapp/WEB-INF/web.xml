@@ -62,6 +62,15 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>SearchLegalCustomer</servlet-name>
+        <servlet-class>presentation.LegalCustomerServlet</servlet-class>
+        <init-param>
+            <param-name>action</param-name>
+            <param-value>search</param-value>
+        </init-param>
+    </servlet>
+
 
     <!--Legal Customer Servlet-->
     <servlet>
@@ -158,6 +167,11 @@
     <servlet-mapping>
         <servlet-name>UpdateLegalCustomer</servlet-name>
         <url-pattern>/LegalCustomer/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SearchLegalCustomer</servlet-name>
+        <url-pattern>/LegalCustomer/search</url-pattern>
     </servlet-mapping>
 
     <!--Real customer servlet mapping -->

@@ -125,37 +125,19 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
         return legalCustomers;
     }
 
-    private String generateLikeQuery(LegalCustomer customer) {
-        String sql = "Select * from legal_customer ";
-        String likeQuerySection = "";
-        if (!"".equals(customer.barCode.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += " and";
-            }
-            likeQuerySection += " bar_code like '%" + customer.barCode + "%'";
-        }
-        if (!"".equals(customer.companyName.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += "and";
-            }
-            likeQuerySection += " company_name like '%" + customer.companyName + "%'";
-        }
-        if (!"".equals(customer.customerNumber.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += "and";
-            }
-            likeQuerySection += " customer_number like '%" + customer.customerNumber + "%'";
-        }
-        return sql + likeQuerySection;
-    }
 
     @Override
     public List<LegalCustomer> all(LegalCustomer customer) {
         List<LegalCustomer> legalCustomers = new ArrayList<>();
         try {
             Connection dataBaseConnection = DataBaseManager.getConnection();
-            String sql = generateLikeQuery(customer);
-            ResultSet resultSet = dataBaseConnection.prepareStatement(sql).executeQuery();
+            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(
+                    "select * from legal_customer where company_name like ? and customer_number like ? and bar_code like ?");
+            preparedStatement.setString(1 , "%" + customer.companyName + "%");
+            preparedStatement.setString(2 , "%" + customer.customerNumber + "%");
+            preparedStatement.setString(3 , "%" + customer.barCode + "%");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String barCode = resultSet.getString("bar_code");
                 String companyName = resultSet.getString("company_name");
