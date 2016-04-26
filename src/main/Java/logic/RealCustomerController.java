@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class RealCustomerController implements Validatable {
+public class RealCustomerController  {
 
     public static List<Pair<String, String>> save(String firstName, String lastName, String fatherName, String nationalCode, String birthday) {
         List<Pair<String, String>> errors = validate(firstName, lastName, fatherName, nationalCode, birthday);
@@ -143,9 +143,6 @@ public class RealCustomerController implements Validatable {
             try {
                 realCustomerCRUD.delete(id);
             } catch (SQLException e) {
-                e.printStackTrace();
-                errors.add(new Pair<String, String>("base" , "unknown error"));
-            } catch (IOException e) {
                 e.printStackTrace();
                 errors.add(new Pair<String, String>("base" , "unknown error"));
             }

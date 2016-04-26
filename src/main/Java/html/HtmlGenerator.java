@@ -67,7 +67,7 @@ public class HtmlGenerator {
             }
         }
         formHtml += "<div>\n" +
-                "            <input type=\"submit\" value=\"ایجاد\">\n" +
+                "            <input type=\"submit\" value=\"ذخیره\">\n" +
                 "        </div>\n" +
                 "    </form>";
         return formHtml;

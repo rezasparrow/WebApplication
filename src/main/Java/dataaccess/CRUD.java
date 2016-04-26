@@ -13,5 +13,5 @@ public interface CRUD<T extends  Customer> {
     public List<T> all(T customer) ;
     public List<T> all() ;
     public List<T> findById(int id) ;
-    public T update(int id , T customer) throws SQLException, ClassNotFoundException;
+    public List<T> update(int id , T customer) throws SQLException, ClassNotFoundException;
 }

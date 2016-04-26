@@ -26,11 +26,16 @@ public class LegalCustomerController {
                 date = df.parse(registrationDay);
                 LegalCustomer legalCustomer = new LegalCustomer(companyName, barCode, date);
 
-                legalCustomer.save();
+                    legalCustomer.save();
+
 
             } catch (ParseException e) {
                 e.printStackTrace();
                 errors.add(new Pair<>("registrationDay", "registration day invalid format"));
+            }catch (SQLException e) {
+                e.printStackTrace();
+                errors.add(new Pair<>("base", "error connect to database"));
+
             }
         }
         return errors;
@@ -68,14 +73,11 @@ public class LegalCustomerController {
         } catch (SQLException e) {
             e.printStackTrace();
             errors.add(new Pair<>("base", "Unknown error"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            errors.add(new Pair<>("base", "Unknown error"));
         }
         return errors;
     }
 
-    public List<LegalCustomer> all() {
+    public static List<LegalCustomer> all() {
         LegalCustomerCRUD legalCustomerCRUD = new LegalCustomerCRUD();
         return legalCustomerCRUD.all();
     }
@@ -126,7 +128,7 @@ public class LegalCustomerController {
                 errors.add(new Pair<>("base", "unknown error"));
             }
         } else {
-            errors.add(new Pair<>("base", "real customer can not find"));
+            errors.add(new Pair<>("base", "legal customer can not find"));
         }
         return errors;
     }

@@ -1,9 +1,9 @@
 package dataaccess;
 
-import exception.FieldRequiredException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -43,10 +43,12 @@ public class RealCustomer extends Customer {
     public static boolean validateNationalCode(String nationalCode) throws SQLException, IOException {
 
         try (
-                DataBaseManager dataBaseManager = new DataBaseManager()
+                Connection dataBaseConnection = DataBaseManager.getConnection()
         ) {
-            String sql = "select count(*) from real_customer where national_code='" + nationalCode.trim() + "'";
-            ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
+            String sql = "select count(*) from real_customer where national_code=?";
+            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
+            preparedStatement.setString(1 , nationalCode);
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
                 return count > 0;

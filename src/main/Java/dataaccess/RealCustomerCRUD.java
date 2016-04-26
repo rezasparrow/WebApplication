@@ -3,10 +3,7 @@ package dataaccess;
 import org.w3c.dom.css.CSSUnknownRule;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,47 +13,51 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
 
     @Override
     public RealCustomer create(RealCustomer customer) throws SQLException, IOException {
-        try (DataBaseManager dataBaseManager = new DataBaseManager()) {
-            dataBaseManager.connection.setAutoCommit(false);
-            String insertCustomerSqlCommand = "insert into customer() values()";
-            PreparedStatement statement = dataBaseManager.connection.prepareStatement(insertCustomerSqlCommand,
-                    Statement.RETURN_GENERATED_KEYS);
+        Connection dataBaseConnection = DataBaseManager.getConnection();
+        dataBaseConnection.setAutoCommit(false);
+        String insertCustomerSqlCommand = "insert into customer() values()";
+        PreparedStatement statement = dataBaseConnection.prepareStatement(insertCustomerSqlCommand,
+                Statement.RETURN_GENERATED_KEYS);
 
-            int effectedRow = statement.executeUpdate();
-            if (effectedRow == 0) {
-                throw new SQLException("create customer failed; no row effected");
-            }
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    Integer customer_number = generatedKeys.getInt(1);
-                    String insertRealCustomerSql = "insert into real_customer" +
-                            "(first_name , last_name , father_name , birthday , national_code ,customer_number)" +
-                            " values(? ,? ,? ,? ,?,? )";
-
-                    statement = dataBaseManager.connection.prepareStatement(insertRealCustomerSql,
-                            Statement.RETURN_GENERATED_KEYS);
-
-                    statement.setString(1, customer.firstName);
-                    statement.setString(2, customer.lastName);
-                    statement.setString(3, customer.fatherName);
-                    statement.setDate(4, new java.sql.Date(customer.birthDay.getTime()));
-                    statement.setString(5, customer.nationalCode);
-                    statement.setInt(6, customer_number);
-
-                    statement.executeUpdate();
-                    dataBaseManager.connection.commit();
-                    return findByCustomerNumber(customer_number);
-                } else {
-                    throw new SQLException("Creating customer failed, no customer number obtained.");
-                }
-            }
-
+        int effectedRow = statement.executeUpdate();
+        if (effectedRow == 0) {
+            dataBaseConnection.rollback();
+            throw new SQLException("create customer failed; no row effected");
         }
+        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                String customer_number = generatedKeys.getString(1);
+                String insertRealCustomerSql = "insert into real_customer" +
+                        "(first_name , last_name , father_name , birthday , national_code ,customer_number)" +
+                        " values(? ,? ,? ,? ,?,? )";
+
+                statement = dataBaseConnection.prepareStatement(insertRealCustomerSql,
+                        Statement.RETURN_GENERATED_KEYS);
+
+                statement.setString(1, customer.firstName);
+                statement.setString(2, customer.lastName);
+                statement.setString(3, customer.fatherName);
+                statement.setDate(4, new java.sql.Date(customer.birthDay.getTime()));
+                statement.setString(5, customer.nationalCode);
+                statement.setString(6, customer_number);
+
+                statement.executeUpdate();
+                dataBaseConnection.commit();
+                return findByCustomerNumber(customer_number);
+            } else {
+                dataBaseConnection.rollback();
+                throw new SQLException("Creating customer failed, no customer number obtained.");
+            }
+        }
+
+
     }
 
-    private RealCustomer findByCustomerNumber(Integer customer_number) throws SQLException {
-        DataBaseManager dataBaseManager = new DataBaseManager();
-        ResultSet resultSet = dataBaseManager.statement.executeQuery("select * from legal_customer where customer_number=" + customer_number);
+    private RealCustomer findByCustomerNumber(String customer_number) throws SQLException {
+        Connection dataBaseConnection = DataBaseManager.getConnection();
+        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement("select * from legal_customer where customer_number=?");
+        preparedStatement.setString(1, customer_number);
+        ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             int id = resultSet.getInt("id");
             String firstName = resultSet.getString("first_name");
@@ -64,23 +65,22 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
             String fatherName = resultSet.getString("father_name");
             String nationalCode = resultSet.getString("national_code");
             Date birthday = resultSet.getDate("birthday");
-            Integer customerNumber = resultSet.getInt("customer_number");
+            String customerNumber = resultSet.getString("customer_number");
 
-            return new RealCustomer(id, customerNumber.toString(), firstName, lastName, fatherName, birthday, nationalCode);
+            return new RealCustomer(id, customerNumber, firstName, lastName, fatherName, birthday, nationalCode);
         }
         return null;
     }
 
     @Override
-    public void delete(int id) throws SQLException, IOException {
+    public void delete(int id) throws SQLException {
         String sql = "delete from real_customer where id=?";
 
-        try (DataBaseManager dataBaseManager = new DataBaseManager();) {
-            PreparedStatement preparedStatement =  dataBaseManager.connection.prepareStatement(sql);
-            preparedStatement.setInt(1 , id);
-            preparedStatement.executeUpdate();
+        Connection dataBaseConnection = DataBaseManager.getConnection();
+        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
+        preparedStatement.setInt(1, id);
+        preparedStatement.executeUpdate();
 
-        }
 
     }
 
@@ -125,20 +125,19 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
 
         return new RealCustomer(id, customerNumber, firstName, lastName, fatherName, birthDay, nationalCode);
     }
+
     @Override
     public List<RealCustomer> all(RealCustomer customer) {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
-            try (DataBaseManager dataBaseManager = new DataBaseManager()) {
-                String sql = generateLikeQuery(customer);
-                ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
-                while (resultSet.next()) {
+            Connection dataBaseConnection = DataBaseManager.getConnection();
+            String sql = generateLikeQuery(customer);
+            ResultSet resultSet = dataBaseConnection.createStatement().executeQuery(sql);
+            while (resultSet.next()) {
 
-                    realCustomers.add(getRealCustomer(resultSet));
-                }
+                realCustomers.add(getRealCustomer(resultSet));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -146,11 +145,11 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
     }
 
     @Override
-    public RealCustomer update(int id, RealCustomer customer) throws SQLException {
-        DataBaseManager dataBaseManager = new DataBaseManager();
+    public List<RealCustomer> update(int id, RealCustomer customer) throws SQLException {
+        Connection dataBaseConnection = DataBaseManager.getConnection();
         String sqlCommand = "update real_customer set last_name=? , national_code=? , father_name=? , birthday =? where id=?";
 
-        PreparedStatement statement = dataBaseManager.connection.prepareStatement(sqlCommand);
+        PreparedStatement statement = dataBaseConnection.prepareStatement(sqlCommand);
         statement.setString(1, customer.firstName);
         statement.setString(2, customer.lastName);
         statement.setString(3, customer.nationalCode);
@@ -158,23 +157,21 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
         statement.setDate(5, new java.sql.Date(customer.birthDay.getTime()));
         statement.executeUpdate();
 
-        return findByCustomerNumber(id);
+        return findById(id);
     }
 
     @Override
-    public  List<RealCustomer> all(){
+    public List<RealCustomer> all() {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
-            try (DataBaseManager dataBaseManager = new DataBaseManager()) {
-                String sql = "select * from real_customer";
-                ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
-                while (resultSet.next()) {
+            Connection dataBaseConnection = DataBaseManager.getConnection();
+            String sql = "select * from real_customer";
+            ResultSet resultSet = dataBaseConnection.prepareStatement(sql).executeQuery();
+            while (resultSet.next()) {
 
-                    realCustomers.add(getRealCustomer(resultSet));
-                }
+                realCustomers.add(getRealCustomer(resultSet));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -185,16 +182,15 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
     public List<RealCustomer> findById(int id) {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
-            try (DataBaseManager dataBaseManager = new DataBaseManager()) {
-                String sql = "select * from real_customer where id = " + id ;
-                ResultSet resultSet = dataBaseManager.statement.executeQuery(sql);
-                while (resultSet.next()) {
+            Connection dataBaseConnection = DataBaseManager.getConnection();
+            String sql = "select * from real_customer where id = >?";
+            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
 
-                    realCustomers.add(getRealCustomer(resultSet));
-                }
+                realCustomers.add(getRealCustomer(resultSet));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }

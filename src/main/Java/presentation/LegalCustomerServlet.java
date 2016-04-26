@@ -1,12 +1,10 @@
 package presentation;
 
 import dataaccess.LegalCustomer;
-import dataaccess.RealCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
 import javafx.util.Pair;
 import logic.LegalCustomerController;
-import logic.RealCustomerController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +23,7 @@ import java.util.List;
 public class LegalCustomerServlet extends HttpServlet {
 
 
-    private void redirectToRealCustomer(HttpServletResponse response) {
+    private void redirectToLegalCustomer(HttpServletResponse response) {
         response.setStatus(response.SC_MOVED_PERMANENTLY);
         response.setHeader("Location", "/LegalCustomer");
     }
@@ -62,7 +60,7 @@ public class LegalCustomerServlet extends HttpServlet {
     private void newLegalCustomer(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
-        htmlGenerator.addTitle("تعریف مشتری حقیقی");
+        htmlGenerator.addTitle("تعریف مشتری حقوقی");
         DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
 
         Date registrationDay = null;
@@ -78,32 +76,31 @@ public class LegalCustomerServlet extends HttpServlet {
         LegalCustomer customer = new LegalCustomer(request.getParameter("companyName"), request.getParameter("barCode"),
                 registrationDay);
 
-        htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/create", customer));
-        htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
+        htmlGenerator.addToBody(partialForm(errors, "/LegalCustomer/create", customer));
+        htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">Back</a> </div>");
 
         printWriter.println(htmlGenerator.generate());
     }
 
     private void showView(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        List<RealCustomer> realCustomers = RealCustomerController.find(id);
-        if (realCustomers.size() == 0) {
-            redirectToRealCustomer(response);
+        List<LegalCustomer> legalCustomers = LegalCustomerController.find(id);
+        if (legalCustomers.size() == 0) {
+            redirectToLegalCustomer(response);
         } else {
-            RealCustomer realCustomer = realCustomers.get(0);
+            LegalCustomer legalCustomer= legalCustomers.get(0);
             PrintWriter printWriter = response.getWriter();
             HtmlGenerator htmlGenerator = new HtmlGenerator();
             htmlGenerator.addTitle("مشتری حقیقی");
             List<FormElement> formElements = new ArrayList<>();
             List<Pair<String, String>> errors = new ArrayList<>();
-            formElements.add(new FormElement("text", "firstName", "نام", realCustomer.firstName, getError("firstName", errors)));
-            formElements.add(new FormElement("text", "lastName", "نام خانوادگی", realCustomer.lastName, getError("lastName", errors)));
-            formElements.add(new FormElement("text", "fatherName", "نام پدر", realCustomer.fatherName, getError("fatherName", errors)));
-            formElements.add(new FormElement("text", "nationalCode", "کد ملی", realCustomer.nationalCode, getError("nationalCode", errors)));
-            formElements.add(new FormElement("date", "birthday", "تاریخ تولد", realCustomer.birthDay.toString(), getError("birthday", errors)));
+            formElements.add(new FormElement("text", "customerNumber", "نام شرکت", legalCustomer.getCustomerNumber(), getError("customerNumber", errors)));
+            formElements.add(new FormElement("text", "companyName", "نام شرکت", legalCustomer.companyName, getError("companyName", errors)));
+            formElements.add(new FormElement("text", "barCode", "کد اقتصادی", legalCustomer.barCode, getError("barCode", errors)));
+            formElements.add(new FormElement("text", "registrationDay", "کد اقتصادی", legalCustomer.registrationDay.toString(), getError("registrationDay", errors)));
 
             htmlGenerator.addToBody(HtmlGenerator.showData(formElements));
-            htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
+            htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">Back</a> </div>");
             printWriter.println(htmlGenerator.generate());
         }
     }
@@ -111,7 +108,7 @@ public class LegalCustomerServlet extends HttpServlet {
     private void editView(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
         String idString = request.getParameter("id");
         if (idString == null) {
-            redirectToRealCustomer(response);
+            redirectToLegalCustomer(response);
         } else {
             PrintWriter printWriter = response.getWriter();
             HtmlGenerator htmlGenerator = new HtmlGenerator();
@@ -119,11 +116,11 @@ public class LegalCustomerServlet extends HttpServlet {
             htmlGenerator.addTitle("ویرایش مشتری حقیقی");
             List<LegalCustomer> legalCustomers = LegalCustomerController.find(id);
             if (legalCustomers.size() == 0) {
-                redirectToRealCustomer(response);
+                redirectToLegalCustomer(response);
             } else {
 
-                htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/update?id=" + id, legalCustomers.get(0)));
-                htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
+                htmlGenerator.addToBody(partialForm(errors, "/LegalCustomer/update?id=" + id, legalCustomers.get(0)));
+                htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">Back</a> </div>");
 
             }
 
@@ -131,67 +128,59 @@ public class LegalCustomerServlet extends HttpServlet {
         }
     }
 
-    private void indexView(HttpServletResponse response, List<RealCustomer> realCustomers) throws IOException {
+    private void indexView(HttpServletResponse response, List<LegalCustomer> legalCustomers) throws IOException {
         PrintWriter printWriter = response.getWriter();
         HtmlGenerator htmlGenerator = new HtmlGenerator();
-        htmlGenerator.addTitle("مشتری حقیقی");
+        htmlGenerator.addTitle("مشتری حقوقی");
         String tableRows = "";
-        for (int i = 0; i < realCustomers.size(); ++i) {
+        for (int i = 0; i < legalCustomers.size(); ++i) {
             tableRows += String.format("<tr>" +
                             "<td>%s</td>" +
                             "<td>%s</td>" +
                             "<td>%s</td>" +
                             "<td>%s</td>" +
-                            "<td>%s</td>" +
-                            "<td>%s</td>" +
-                            "<td><a href=\"/RealCustomer/edit?id=%s\">update</a></td>\n" +
-                            "<td><a href=\"/RealCustomer/delete?id=%s\">delete</a></td>\n" +
+                            "<td><a href=\"/LegalCustomer/edit?id=%s\">update</a></td>\n" +
+                            "<td><a href=\"/LegalCustomer/delete?id=%s\">delete</a></td>\n" +
                             "</tr>"
-                    , i + 1, realCustomers.get(i).getCustomerNumber(), realCustomers.get(i).firstName,
-                    realCustomers.get(i).lastName, realCustomers.get(i).fatherName
-                    , realCustomers.get(i).nationalCode,
-                    realCustomers.get(i).id, realCustomers.get(i).id);
+                    , i + 1, legalCustomers.get(i).getCustomerNumber(), legalCustomers.get(i).companyName,
+                    legalCustomers.get(i).barCode ,
+                    legalCustomers.get(i).id, legalCustomers.get(i).id , 3 ,4,5,1);
         }
         String body = "\n" +
                 "    <div class=\"content\">\n" +
                 "\n" +
-                "        <a class=\"btn btn-sml\" href=\"/RealCustomer/new\"> تعریف مشتری حقیقی جدید</a>\n" +
+                "        <a class=\"btn btn-sml\" href=\"/LegalCustomer/new\"> تعریف مشتری حقیقی جدید</a>\n" +
+                "<form action=\"/LegalCustomer/search\" method=\"post\">" +
                 "        <table class=\"table\">\n" +
                 "            <thead>\n" +
                 "            <tr>\n" +
                 "                <th>\n" +
-                "                    نام\n" +
+                "                    شماره مشتری\n" +
                 "                </th>\n" +
                 "                <th>\n" +
-                "                    نام خانوادگی\n" +
+                "                    نام شرکت\n" +
                 "                </th>\n" +
                 "                <th>\n" +
-                "                    کد ملی\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                "                    شناسه\n" +
+                "                   شماره اقتصادی\n" +
                 "                </th>\n" +
                 "            </tr>\n" +
                 "            </thead>\n" +
                 "            <tbody>\n" +
                 "            <tr style=\"padding: 0px;\">\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"customerNumber\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"companyName\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
-                "                </td>\n" +
-                "                <td>\n" +
-                "                    <input class=\"input-control\">\n" +
+                "                    <input name=\"barCode\" class=\"input-control\">\n" +
                 "                </td>\n" +
                 "                <td><input value=\"search\" class=\"btn btn-sml\" type=\"submit\" /></td>\n" +
                 "            </tr>\n" +
                 "            </tbody>\n" +
                 "\n" +
-                "        </table>\n" +
+                "        </table></form>\n" +
                 "        <table class=\"table\">\n" +
                 "            <thead>\n" +
                 "            <tr>\n" +
@@ -202,16 +191,10 @@ public class LegalCustomerServlet extends HttpServlet {
                 "                    شماره مشتری\n" +
                 "                </th>\n" +
                 "                <th>\n" +
-                "                    نام\n" +
+                "                    نام شرکت\n" +
                 "                </th>\n" +
                 "                <th>\n" +
-                " نام خانوادگی\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                " نام پدر\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                "                    کد ملی\n" +
+                " کد اقتصادی\n" +
                 "                </th>\n" +
                 "                <th></th>\n" +
                 "                <th></th>\n" +
@@ -229,21 +212,19 @@ public class LegalCustomerServlet extends HttpServlet {
 
     private void delete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-        List<Pair<String, String>> errors = RealCustomerController.destroy(id);
+        List<Pair<String, String>> errors = LegalCustomerController.destroy(id);
         if (errors.size() == 0) {
-            redirectToRealCustomer(response);
+            redirectToLegalCustomer(response);
         }
     }
 
     private void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String fatherName = request.getParameter("fatherName");
-        String nationalCode = request.getParameter("nationalCode");
-        String birthday = request.getParameter("birthday");
-        List<Pair<String, String>> errors = RealCustomerController.save(firstName, lastName, fatherName, nationalCode, birthday);
+        String companyName = request.getParameter("companyName");
+        String barCode = request.getParameter("barCode");
+        String registrationDay = request.getParameter("registrationDay");
+        List<Pair<String, String>> errors = LegalCustomerController.save(companyName, barCode ,registrationDay);
         if (errors.size() == 0) {
-            redirectToRealCustomer(response);
+            redirectToLegalCustomer(response);
         } else {
             newLegalCustomer(request, response, errors);
 
@@ -259,20 +240,19 @@ public class LegalCustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getServletConfig().getInitParameter("action");
         response.setContentType("text/html; charset=UTF-8");
-        RealCustomerController realCustomerController = new RealCustomerController();
 
         if ("new".equalsIgnoreCase(action)) {
             newLegalCustomer(request, response, new ArrayList<Pair<String, String>>());
+        }  else if ("show".equalsIgnoreCase(action)) {
+            showView(request, response);
         } else if ("edit".equalsIgnoreCase(action)) {
             List<Pair<String, String>> errors = new ArrayList<>();
             editView(request, response, errors);
-        } else if ("show".equalsIgnoreCase(action)) {
-            showView(request, response);
-        } else if ("delete".equalsIgnoreCase(action)) {
+        }else if ("delete".equalsIgnoreCase(action)) {
             delete(request, response);
         } else {
-            List<RealCustomer> realCustomers = realCustomerController.all();
-            indexView(response, realCustomers);
+            List<LegalCustomer> legalCustomers = LegalCustomerController.all();
+            indexView(response, legalCustomers);
         }
 
     }
@@ -289,23 +269,21 @@ public class LegalCustomerServlet extends HttpServlet {
         } else if ("update".equalsIgnoreCase(action)) {
             update(request, response);
         } else {
-            redirectToRealCustomer(response);
+            redirectToLegalCustomer(response);
         }
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String fatherName = request.getParameter("fatherName");
-        String nationalCode = request.getParameter("nationalCode");
-        String birthday = request.getParameter("birthday");
+        String companyName = request.getParameter("companyName");
+        String barCode = request.getParameter("barCode");
+        String registrationDay = request.getParameter("registrationDay");
         int id = Integer.parseInt(request.getParameter("id"));
-        List<Pair<String, String>> errors = RealCustomerController.update(id, firstName, lastName, fatherName, nationalCode, birthday);
+        List<Pair<String, String>> errors = LegalCustomerController.update(id, companyName, barCode, registrationDay);
 
         if (errors.size() == 0) {
             response.setStatus(response.SC_MOVED_PERMANENTLY);
-            response.setHeader("Location", "/RealCustomer/show?id=" + id);
+            response.setHeader("Location", "/LegalCustomer/show?id=" + id);
         } else {
             editView(request, response, errors);
 
