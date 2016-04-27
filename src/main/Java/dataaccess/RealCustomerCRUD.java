@@ -74,12 +74,16 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
 
     @Override
     public void delete(int id) throws SQLException {
-        String sql = "delete from real_customer where id=?";
+        String sql = "delete from customer where customer_number=?";
 
         Connection dataBaseConnection = DataBaseManager.getConnection();
         PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
-        preparedStatement.setInt(1, id);
-        preparedStatement.executeUpdate();
+        List<RealCustomer > realCustomers = findById(id);
+        if(realCustomers.size() > 0){
+            RealCustomer realCustomer = realCustomers.get(0);
+            preparedStatement.setString(1, realCustomer.customerNumber);
+            preparedStatement.execute();
+        }
 
 
     }
@@ -152,7 +156,7 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
     @Override
     public List<RealCustomer> update(int id, RealCustomer customer) throws SQLException {
         Connection dataBaseConnection = DataBaseManager.getConnection();
-        String sqlCommand = "update real_customer set last_name=? , national_code=? , father_name=? , birthday =? where id=?";
+        String sqlCommand = "update real_customer set first_name = ? , last_name=? , national_code=? , father_name=? , birthday =? where id=?";
 
         PreparedStatement statement = dataBaseConnection.prepareStatement(sqlCommand);
         statement.setString(1, customer.firstName);
@@ -160,6 +164,7 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
         statement.setString(3, customer.nationalCode);
         statement.setString(4, customer.fatherName);
         statement.setDate(5, new java.sql.Date(customer.birthDay.getTime()));
+        statement.setInt(6 , id);
         statement.executeUpdate();
 
         return findById(id);

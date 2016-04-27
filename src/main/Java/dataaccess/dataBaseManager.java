@@ -13,7 +13,7 @@ import java.sql.Statement;
  */
 public class DataBaseManager implements Closeable {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/bank";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/bank?characterEncoding=UTF-8";
 
     //  Database credentials
     static final String USER = "root";

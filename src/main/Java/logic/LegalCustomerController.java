@@ -3,6 +3,8 @@ package logic;
 import dataaccess.LegalCustomer;
 import dataaccess.LegalCustomerCRUD;
 import javafx.util.Pair;
+import logic.Bundle.LegalCustomerBundle;
+import logic.Bundle.RealCustomerBundle;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,15 +28,15 @@ public class LegalCustomerController {
                 date = df.parse(registrationDay);
                 LegalCustomer legalCustomer = new LegalCustomer(companyName, barCode, date);
 
-                    legalCustomer.save();
+                legalCustomer.save();
 
 
             } catch (ParseException e) {
                 e.printStackTrace();
-                errors.add(new Pair<>("registrationDay", "registration day invalid format"));
-            }catch (SQLException e) {
+                errors.add(new Pair<>("registrationDay", LegalCustomerBundle.REGISTRATION_DATE_INVALID_FORMAT));
+            } catch (SQLException e) {
                 e.printStackTrace();
-                errors.add(new Pair<>("base", "error connect to database"));
+                errors.add(new Pair<>("base", LegalCustomerBundle.DATA_BASE_ERROR_CONNECTION));
 
             }
         }
@@ -44,13 +46,13 @@ public class LegalCustomerController {
     public static List<Pair<String, String>> validate(String companyName, String barCode, String registrationDay) {
         List<Pair<String, String>> errors = new ArrayList<>();
         if (companyName.isEmpty()) {
-            errors.add(new Pair<>("companyName", "company name required"));
+            errors.add(new Pair<>("companyName", LegalCustomerBundle.COMPANY_NAME_REQUIRED_REQUIRED));
         }
         if (barCode.isEmpty()) {
-            errors.add(new Pair<>("barCode", "barcode required"));
+            errors.add(new Pair<>("barCode", LegalCustomerBundle.BAR_CODE_REQUIRED));
         }
         if (registrationDay.isEmpty()) {
-            errors.add(new Pair<>("registrationDay", "registration day required"));
+            errors.add(new Pair<>("registrationDay", LegalCustomerBundle.REGISTRATION_DATE_REQUIRED));
         }
 
 
@@ -65,15 +67,17 @@ public class LegalCustomerController {
 
     public static List<Pair<String, String>> validateBarCode(String barCode) {
         List<Pair<String, String>> errors = new ArrayList<>();
-        try {
-            if (LegalCustomer.validateBarCodeUnique(barCode)) {
-                errors.add(new Pair<>("barCode", "bar code must be unique"));
-            }
 
+        try {
+            if (LegalCustomer.findByBarCode(barCode).size() > 0) {
+                errors.add(new Pair<>("barCode", LegalCustomerBundle.BAR_CODE_IS_UNIQUE));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            errors.add(new Pair<>("base", "Unknown error"));
+            errors.add(new Pair<>("base", LegalCustomerBundle.DATA_BASE_ERROR_CONNECTION));
         }
+
+
         return errors;
     }
 
@@ -122,18 +126,18 @@ public class LegalCustomerController {
                 legalCustomer.delete();
             } catch (SQLException e) {
                 e.printStackTrace();
-                errors.add(new Pair<>("base", "unknown error"));
+                errors.add(new Pair<>("base", LegalCustomerBundle.DATA_BASE_ERROR_CONNECTION));
             } catch (IOException e) {
                 e.printStackTrace();
-                errors.add(new Pair<>("base", "unknown error"));
+                errors.add(new Pair<>("base", LegalCustomerBundle.DATA_BASE_ERROR_CONNECTION));
             }
         } else {
-            errors.add(new Pair<>("base", "legal customer can not find"));
+            errors.add(new Pair<>("base", LegalCustomerBundle.CAN_NOT_FIND_LEGAL_CUSTOMER));
         }
         return errors;
     }
 
-    public static List<LegalCustomer> find(LegalCustomer legalCustomer){
+    public static List<LegalCustomer> find(LegalCustomer legalCustomer) {
         LegalCustomerCRUD legalCustomerCRUD = new LegalCustomerCRUD();
         return legalCustomerCRUD.all(legalCustomer);
     }

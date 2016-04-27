@@ -16,13 +16,15 @@ public class HtmlGenerator {
         html = "<!DOCTYPE html>" +
                 "<html>" +
                 "<head>" + "" +
+                "<meta charset=\"UTF-8\">"+
                 "<link href=\"/css/style.css\" rel=\"stylesheet\">" +
                 "%s" +
                 "</head>" +
                 "<body  style=\"background:#cccccc;\">" +
                 "<div class=\"container\" style=\"direction: rtl\">" +
                 "<div class=\"header\">\n" +
-                "\n" +
+
+                "        <a class=\"btn btn-sml\" href=\"/index.html\">خانه</a>\n" +
                 "    </div>\n" +
                 "%s" +
                 "</div>" +
@@ -49,7 +51,7 @@ public class HtmlGenerator {
     }
 
     public static String generateForm(List<FormElement> formElements, String action) {
-        String formHtml = String.format("<form action=\"%s\" method=\"post\">", action);
+        String formHtml = String.format("<form class=\"form\" action=\"%s\" method=\"post\">", action);
         for (FormElement formElement : formElements) {
             if (formElement.errorText.isEmpty()) {
                 formHtml += String.format("<div class =\"form-elm\" >\n" +
@@ -67,7 +69,7 @@ public class HtmlGenerator {
             }
         }
         formHtml += "<div>\n" +
-                "            <input type=\"submit\" value=\"ذخیره\">\n" +
+                "            <input type=\"submit\" class=\"btn btn-sml\" value=\"ذخیره\">\n" +
                 "        </div>\n" +
                 "    </form>";
         return formHtml;
@@ -81,6 +83,6 @@ public class HtmlGenerator {
                     "            <div  class=\"sml-col\">%s</div>\n" +
                     "        </div>" ,formElement.name , formElement.text  , formElement.value);
         }
-        return  "<div>"+data+" </div>";
+        return  "<div class=\"form\" >"+data+" </div>";
     }
 }

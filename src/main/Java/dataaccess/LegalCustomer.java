@@ -1,14 +1,9 @@
 package dataaccess;
 
-import exception.FieldRequiredException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Dotin School1 on 4/17/2016.
@@ -29,27 +24,12 @@ public class LegalCustomer extends Customer {
         legalCustomerCRUD = new LegalCustomerCRUD();
     }
 
+
     public LegalCustomer(String companyName, String barCode, Date registrationDay) {
         this.companyName = companyName;
         this.barCode = barCode;
         this.registrationDay = registrationDay;
         this.legalCustomerCRUD = new LegalCustomerCRUD();
-    }
-
-
-    public static boolean validateBarCodeUnique(String barCode) throws SQLException {
-
-        Connection dataBaseConnection = DataBaseManager.getConnection();
-
-        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement("select count(*) from legal_customer where bar_code=?");
-        preparedStatement.setString(1, barCode);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            int count = resultSet.getInt(1);
-            return count > 0;
-        }
-
-        return false;
     }
 
     public void update() throws SQLException {
@@ -60,7 +40,7 @@ public class LegalCustomer extends Customer {
         legalCustomerCRUD.create(this);
     }
 
-    public void getAll() {
+    public void getAll() throws SQLException {
         legalCustomerCRUD.all();
 
     }
@@ -71,5 +51,10 @@ public class LegalCustomer extends Customer {
 
     public String getCustomerNumber() {
         return customerNumber;
+    }
+
+    public static List<LegalCustomer> findByBarCode(String barCode) throws SQLException {
+        LegalCustomerCRUD legalCustomerCRUD = new LegalCustomerCRUD();
+        return legalCustomerCRUD.all(new LegalCustomer("" , barCode , null));
     }
 }

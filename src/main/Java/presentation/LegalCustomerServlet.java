@@ -32,10 +32,10 @@ public class LegalCustomerServlet extends HttpServlet {
         String error = "";
         for (Pair<String, String> err : errors) {
             if (err.getKey().equalsIgnoreCase(key)) {
-                if (error.length() > 0) {
-                    error += err.getValue() + "<br>";
-                } else {
+                if (error.length() <= 0) {
                     error += err.getValue();
+                } else {
+                    error += err.getValue() + "<br>";
                 }
             }
         }
@@ -43,7 +43,7 @@ public class LegalCustomerServlet extends HttpServlet {
     }
 
     private String partialForm(List<Pair<String, String>> errors, String action, LegalCustomer customer) {
-        List<FormElement> formElements = new ArrayList<FormElement>();
+        List<FormElement> formElements = new ArrayList<>();
         String registrationDay = "";
         if (customer.registrationDay == null) {
             registrationDay = "";
@@ -77,7 +77,7 @@ public class LegalCustomerServlet extends HttpServlet {
                 registrationDay);
 
         htmlGenerator.addToBody(partialForm(errors, "/LegalCustomer/create", customer));
-        htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">Back</a> </div>");
+        htmlGenerator.addToBody("<div class=\"form\" > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">بازگشن</a> </div>");
 
         printWriter.println(htmlGenerator.generate());
     }
@@ -100,7 +100,10 @@ public class LegalCustomerServlet extends HttpServlet {
             formElements.add(new FormElement("text", "registrationDay", "کد اقتصادی", legalCustomer.registrationDay.toString(), getError("registrationDay", errors)));
 
             htmlGenerator.addToBody(HtmlGenerator.showData(formElements));
-            htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">Back</a> </div>");
+            htmlGenerator.addToBody("<div class=\"form\">" +
+                    "       <a class=\"btn btn-sml\" href=\"/LegalCustomer/edit?id="+legalCustomer.id+"\">ویرایش</a>" +
+                    "       <a class=\"btn btn-sml\" href=\"/RealCustomer\">بازگشت</a> " +
+                    "</div>");
             printWriter.println(htmlGenerator.generate());
         }
     }
@@ -120,7 +123,7 @@ public class LegalCustomerServlet extends HttpServlet {
             } else {
 
                 htmlGenerator.addToBody(partialForm(errors, "/LegalCustomer/update?id=" + id, legalCustomers.get(0)));
-                htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/LegalCustomer\">Back</a> </div>");
+                htmlGenerator.addToBody("<div class=\"form\"> <a class=\"btn btn-sml\" href=\"/LegalCustomer\">بازگشت</a> </div>");
 
             }
 
@@ -139,7 +142,7 @@ public class LegalCustomerServlet extends HttpServlet {
                             "<td>%s</td>" +
                             "<td>%s</td>" +
                             "<td>%s</td>" +
-                            "<td><a href=\"/LegalCustomer/edit?id=%s\">update</a></td>\n" +
+                            "<td><a href=\"/LegalCustomer/edit?id=%s\">edit</a></td>\n" +
                             "<td><a href=\"/LegalCustomer/delete?id=%s\">delete</a></td>\n" +
                             "</tr>"
                     , i + 1, legalCustomers.get(i).getCustomerNumber(), legalCustomers.get(i).companyName,
@@ -212,7 +215,7 @@ public class LegalCustomerServlet extends HttpServlet {
 
     private void delete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-        List<Pair<String, String>> errors = LegalCustomerController.destroy(id);
+        LegalCustomerController.destroy(id);
 
         redirectToLegalCustomer(response);
 
@@ -233,7 +236,7 @@ public class LegalCustomerServlet extends HttpServlet {
     }
 
     private void search(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<LegalCustomer> legalCustomers = new ArrayList<>();
+        List<LegalCustomer> legalCustomers;
         String barCode = request.getParameter("barCode");
         String companyName = request.getParameter("companyName");
         String customerNumber = request.getParameter("customerNumber");
@@ -245,6 +248,7 @@ public class LegalCustomerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getServletConfig().getInitParameter("action");
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
         if ("new".equalsIgnoreCase(action)) {
@@ -266,6 +270,7 @@ public class LegalCustomerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html; charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         String action = getServletConfig().getInitParameter("action");
 
         if ("create".equalsIgnoreCase(action)) {

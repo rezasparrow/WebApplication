@@ -1,12 +1,9 @@
 package presentation;
 
-import dataaccess.Customer;
-import dataaccess.LegalCustomer;
 import dataaccess.RealCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
 import javafx.util.Pair;
-import logic.LegalCustomerController;
 import logic.RealCustomerController;
 
 import javax.servlet.ServletException;
@@ -44,7 +41,7 @@ public class RealCustomerServlet extends HttpServlet {
     }
 
     private String partialForm(List<Pair<String, String>> errors, String action, RealCustomer customer) {
-        List<FormElement> formElements = new ArrayList<FormElement>();
+        List<FormElement> formElements = new ArrayList<>();
         String birthday = "";
         if (customer.birthDay == null) {
             birthday = "";
@@ -80,7 +77,7 @@ public class RealCustomerServlet extends HttpServlet {
                 birthday, request.getParameter("nationalCode"));
 
         htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/create", customer));
-        htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
+        htmlGenerator.addToBody("<div class=\"form\"> <a class=\"btn btn-sml\" href=\"/RealCustomer\">بازگشت</a> </div>");
 
         printWriter.println(htmlGenerator.generate());
     }
@@ -104,7 +101,9 @@ public class RealCustomerServlet extends HttpServlet {
             formElements.add(new FormElement("date", "birthday", "تاریخ تولد", realCustomer.birthDay.toString(), getError("birthday", errors)));
 
             htmlGenerator.addToBody(HtmlGenerator.showData(formElements));
-            htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
+            htmlGenerator.addToBody("<div class=\"form\"> " +
+                    "<a class=\"btn btn-sml\" href=\"/RealCustomer/edit?id="+realCustomer.id+"\">وبرایش</a> " +
+                    "<a class=\"btn btn-sml\" href=\"/RealCustomer\">بازگشت</a> </div>");
             printWriter.println(htmlGenerator.generate());
         }
     }
@@ -145,7 +144,7 @@ public class RealCustomerServlet extends HttpServlet {
                             "<td>%s</td>" +
                             "<td>%s</td>" +
                             "<td>%s</td>" +
-                            "<td><a href=\"/RealCustomer/edit?id=%s\">update</a></td>\n" +
+                            "<td><a href=\"/RealCustomer/edit?id=%s\">edit</a></td>\n" +
                             "<td><a href=\"/RealCustomer/delete?id=%s\">delete</a></td>\n" +
                             "</tr>"
                     , i + 1, realCustomers.get(i).getCustomerNumber(), realCustomers.get(i).firstName,
@@ -232,7 +231,7 @@ public class RealCustomerServlet extends HttpServlet {
 
     private void delete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-        List<Pair<String, String>> errors = RealCustomerController.destroy(id);
+        RealCustomerController.destroy(id);
 
         redirectToRealCustomer(response);
 
@@ -255,7 +254,7 @@ public class RealCustomerServlet extends HttpServlet {
     }
 
     private void search(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<RealCustomer> realCustomers = new ArrayList<>();
+        List<RealCustomer> realCustomers;
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String fatherName = request.getParameter("fatherName");
@@ -270,6 +269,7 @@ public class RealCustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = getServletConfig().getInitParameter("action");
         response.setContentType("text/html; charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         RealCustomerController realCustomerController = new RealCustomerController();
 
         if ("new".equalsIgnoreCase(action)) {
@@ -290,7 +290,9 @@ public class RealCustomerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
+
         String action = getServletConfig().getInitParameter("action");
 
         if ("create".equalsIgnoreCase(action)) {

@@ -76,12 +76,15 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
 
     @Override
     public void delete(int id) throws SQLException, IOException {
-        String sql = "delete from legal_customer where id=" + id;
 
         Connection dataBaseConnection = DataBaseManager.getConnection();
-        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement("delete from legal_customer where id=?");
-        preparedStatement.setInt(1, id);
-        preparedStatement.execute();
+        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement("delete from legal_customer where customer_number=?");
+        List<LegalCustomer> legalCustomers = findById(id);
+        if (legalCustomers.size() > 0) {
+            LegalCustomer legalCustomer = legalCustomers.get(0);
+            preparedStatement.setString(1, legalCustomer.customerNumber);
+            preparedStatement.execute();
+        }
 
     }
 
@@ -91,16 +94,17 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
         List<LegalCustomer> legalCustomers = new ArrayList<>();
         try {
             Connection dataBaseConnection = DataBaseManager.getConnection();
+
             String sql = "select * from legal_customer";
             ResultSet resultSet = dataBaseConnection.prepareStatement(sql).executeQuery();
             while (resultSet.next()) {
 
                 legalCustomers.add(getLegalCustomer(resultSet));
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return legalCustomers;
     }
 
@@ -129,13 +133,15 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
     @Override
     public List<LegalCustomer> all(LegalCustomer customer) {
         List<LegalCustomer> legalCustomers = new ArrayList<>();
+
         try {
             Connection dataBaseConnection = DataBaseManager.getConnection();
+
             PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(
                     "select * from legal_customer where company_name like ? and customer_number like ? and bar_code like ?");
-            preparedStatement.setString(1 , "%" + customer.companyName + "%");
-            preparedStatement.setString(2 , "%" + customer.customerNumber + "%");
-            preparedStatement.setString(3 , "%" + customer.barCode + "%");
+            preparedStatement.setString(1, "%" + customer.companyName + "%");
+            preparedStatement.setString(2, "%" + customer.customerNumber + "%");
+            preparedStatement.setString(3, "%" + customer.barCode + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -159,12 +165,12 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
     @Override
     public List<LegalCustomer> update(int id, LegalCustomer customer) throws SQLException {
         Connection dataBaseConnection = DataBaseManager.getConnection();
-        String sqlCommand = "update legal_customer set company_name=? , bar_code=? where id=?";
+        String sqlCommand = "update legal_customer set company_name='رضا' , bar_code=? where id=?";
 
         PreparedStatement statement = dataBaseConnection.prepareStatement(sqlCommand);
-        statement.setInt(3, id);
-        statement.setString(1, customer.companyName);
-        statement.setString(2, customer.barCode);
+        statement.setInt(2, id);
+        statement.setString(1, customer.barCode);
+//        statement.setString(2, customer.barCode);
         statement.executeUpdate();
 
 

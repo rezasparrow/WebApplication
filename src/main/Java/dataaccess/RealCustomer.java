@@ -1,11 +1,14 @@
 package dataaccess;
 
 
+import sun.util.resources.cldr.so.CurrencyNames_so;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,22 +43,7 @@ public class RealCustomer extends Customer {
         this.id = id;
     }
 
-    public static boolean validateNationalCode(String nationalCode) throws SQLException, IOException {
 
-
-        Connection dataBaseConnection = DataBaseManager.getConnection();
-
-        String sql = "select count(*) from real_customer where national_code=?";
-        PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(sql);
-        preparedStatement.setString(1, nationalCode);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            int count = resultSet.getInt(1);
-            return count > 0;
-        }
-
-        return false;
-    }
 
     public String getCustomerNumber() {
         return customerNumber;
@@ -80,4 +68,8 @@ public class RealCustomer extends Customer {
 
     }
 
+    public static List<RealCustomer> findByCustomerNumber(String nationalCode) throws SQLException {
+        RealCustomerCRUD realCustomerCRUD = new RealCustomerCRUD();
+        return realCustomerCRUD.all(new RealCustomer("" , "" , ""  , null , nationalCode));
+    }
 }

@@ -1,11 +1,10 @@
 package logic;
 
-import dataaccess.LegalCustomer;
-import dataaccess.LegalCustomerCRUD;
 import dataaccess.RealCustomer;
 import dataaccess.RealCustomerCRUD;
+
 import javafx.util.Pair;
-import presentation.RealCustomerServlet;
+import logic.Bundle.RealCustomerBundle;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -45,22 +44,22 @@ public class RealCustomerController  {
     public static List<Pair<String, String>> validate(String firstName, String lastName, String fatherName, String nationalCode, String birthday) {
         List<Pair<String, String>> errors = new ArrayList<>();
         if (firstName.isEmpty()) {
-            errors.add(new Pair<>("firstName", "first name required"));
+            errors.add(new Pair<>("firstName", RealCustomerBundle.FIRST_NAME_REQUIRED));
         }
         if (lastName.isEmpty()) {
-            errors.add(new Pair<>("lastName", "last name required"));
+            errors.add(new Pair<>("lastName", RealCustomerBundle.LAST_NAME_REQUIRED));
         }
         if (fatherName.isEmpty()) {
-            errors.add(new Pair<>("fatherName", "father name required"));
+            errors.add(new Pair<>("fatherName", RealCustomerBundle.FATHER_NAME_REQUIRED));
         }
         if (nationalCode.isEmpty()) {
-            errors.add(new Pair<>("nationalCode", "national code required"));
+            errors.add(new Pair<>("nationalCode", RealCustomerBundle.NATIONAL_CODE_REQUIRED));
         } else if (nationalCode.length() != 10) {
-            errors.add(new Pair<>("nationalCode", "size of national code must be 10"));
+            errors.add(new Pair<>("nationalCode", RealCustomerBundle.NATIONAL_CODE_LENGTH));
         }
 
         if (birthday.isEmpty()) {
-            errors.add(new Pair<>("birthday", "birthday required"));
+            errors.add(new Pair<>("birthday", RealCustomerBundle.BIRTHDAY_REQUIRED));
         } else {
             DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
             Date startDate;
@@ -69,7 +68,7 @@ public class RealCustomerController  {
 
                 df.format(startDate);
             } catch (ParseException e) {
-                errors.add(new Pair<>("birthday", "invalid birthday format"));
+                errors.add(new Pair<>("birthday", RealCustomerBundle.BIRTHDAY_INVALID_FORMAT));
             }
         }
         return errors;
@@ -84,22 +83,15 @@ public class RealCustomerController  {
     public static List<Pair<String, String>> validateNationalCode(String nationalCode) {
         List<Pair<String, String>> errors = new ArrayList<>();
         try {
-            if (RealCustomer.validateNationalCode(nationalCode)) {
-                errors.add(new Pair<>("nationalCode", "national code must be unique"));
+            if (RealCustomer.findByCustomerNumber(nationalCode).size() > 0) {
+                errors.add(new Pair<>("nationalCode", RealCustomerBundle.NATIONAL_CODE_IS_UNIQUE));
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            errors.add(new Pair<>("base", "Unknown error"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            errors.add(new Pair<>("base", "Unknown error"));
+            errors.add(new Pair<>("base",  RealCustomerBundle.DATA_BASE_ERROR_CONNECTION));
         }
         return errors;
-    }
-
-    public boolean isValid() {
-        return false;
     }
 
     public List<RealCustomer> all() {
@@ -126,10 +118,10 @@ public class RealCustomerController  {
 
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    errors.add(new Pair<>("base", "unknown error"));
+                    errors.add(new Pair<>("birthday", RealCustomerBundle.BIRTHDAY_INVALID_FORMAT));
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    errors.add(new Pair<>("base", "unknown error"));
+                    errors.add(new Pair<>("base", RealCustomerBundle.DATA_BASE_ERROR_CONNECTION));
                 }
             }
         }
@@ -146,11 +138,11 @@ public class RealCustomerController  {
                 realCustomerCRUD.delete(id);
             } catch (SQLException e) {
                 e.printStackTrace();
-                errors.add(new Pair<String, String>("base" , "unknown error"));
+                errors.add(new Pair<>("base",RealCustomerBundle.DATA_BASE_ERROR_CONNECTION));
             }
         }
         else{
-            errors.add(new Pair<>("base", "real customer can not find"));
+            errors.add(new Pair<>("base",RealCustomerBundle.CAN_NOT_FIND_REAL_CUSTOMER));
         }
         return errors;
     }
