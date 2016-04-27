@@ -1,5 +1,6 @@
 package presentation;
 
+import com.sun.xml.internal.ws.client.sei.ResponseBuilder;
 import dataaccess.RealCustomer;
 import html.FormElement;
 import html.HtmlGenerator;
@@ -102,7 +103,7 @@ public class RealCustomerServlet extends HttpServlet {
 
             htmlGenerator.addToBody(HtmlGenerator.showData(formElements));
             htmlGenerator.addToBody("<div class=\"form\"> " +
-                    "<a class=\"btn btn-sml\" href=\"/RealCustomer/edit?id="+realCustomer.id+"\">وبرایش</a> " +
+                    "<a class=\"btn btn-sml\" href=\"/RealCustomer/edit?id=" + realCustomer.id + "\">وبرایش</a> " +
                     "<a class=\"btn btn-sml\" href=\"/RealCustomer\">بازگشت</a> </div>");
             printWriter.println(htmlGenerator.generate());
         }
@@ -191,39 +192,44 @@ public class RealCustomerServlet extends HttpServlet {
                 "                <td><input value=\"search\" class=\"btn btn-sml\" type=\"submit\" /></td>\n" +
                 "            </tr>\n" +
                 "            </tbody>" +
-                "</form>\n" +
-                "\n" +
-                "        </table>\n" +
-                "        <table class=\"table\">\n" +
-                "            <thead>\n" +
-                "            <tr>\n" +
-                "                <th>\n" +
-                "                    ردیف\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                "                    شماره مشتری\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                "                    نام\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                " نام خانوادگی\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                " نام پدر\n" +
-                "                </th>\n" +
-                "                <th>\n" +
-                "                    کد ملی\n" +
-                "                </th>\n" +
-                "                <th></th>\n" +
-                "                <th></th>\n" +
-                "            </tr>\n" +
-                "            </thead>\n" +
-                "            <tbody>\n" +
-                tableRows +
-                "            </tbody>\n" +
-                "        </table>\n" +
-                "    </div>";
+                "</form>\n";
+        if (realCustomers.size() > 0) {
+
+            body +=
+                    "        </table>\n" +
+                            "        <table class=\"table\">\n" +
+                            "            <thead>\n" +
+                            "            <tr>\n" +
+                            "                <th>\n" +
+                            "                    ردیف\n" +
+                            "                </th>\n" +
+                            "                <th>\n" +
+                            "                    شماره مشتری\n" +
+                            "                </th>\n" +
+                            "                <th>\n" +
+                            "                    نام\n" +
+                            "                </th>\n" +
+                            "                <th>\n" +
+                            " نام خانوادگی\n" +
+                            "                </th>\n" +
+                            "                <th>\n" +
+                            " نام پدر\n" +
+                            "                </th>\n" +
+                            "                <th>\n" +
+                            "                    کد ملی\n" +
+                            "                </th>\n" +
+                            "                <th></th>\n" +
+                            "                <th></th>\n" +
+                            "            </tr>\n" +
+                            "            </thead>\n" +
+                            "            <tbody>\n" +
+                            tableRows +
+                            "            </tbody>\n" +
+                            "        </table>\n" ;
+        } else {
+            body += "<div> هیچ داده‌‌ای موجود نمی‌باشد</div>";
+        }
+        body += "</div>";
         htmlGenerator.addToBody(body);
         printWriter.println(htmlGenerator.generate());
 

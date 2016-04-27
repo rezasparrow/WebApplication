@@ -1,5 +1,6 @@
 package dataaccess;
 
+import javafx.util.Pair;
 import org.w3c.dom.css.CSSUnknownRule;
 
 import java.io.IOException;
@@ -88,34 +89,38 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
 
     }
 
-    private String generateLikeQuery(RealCustomer customer) {
+    private PreparedStatement generateFindQuery(RealCustomer customer) throws SQLException {
+
         String sql = "Select * from real_customer ";
-        String likeQuerySection = "";
+        List<Pair<String , String>> attributes = new ArrayList<>();
         if (!"".equals(customer.firstName.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += " and";
-            }
-            likeQuerySection += String.format(" first_name like '%%s%'", customer.firstName);
+            attributes.add(new Pair<>("first_name", customer.firstName));
         }
         if (!"".equals(customer.lastName.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += "and";
-            }
-            likeQuerySection = likeQuerySection + " last_name like '%" + customer.lastName + "%'";
+            attributes.add(new Pair<>("last_name", customer.lastName));
         }
         if (!"".equals(customer.nationalCode.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += " and";
-            }
-            likeQuerySection += " national_code like '%" + customer.nationalCode + "%'";
+
+            attributes.add(new Pair<>("national_code", customer.nationalCode));
         }
         if (!"".equals(customer.customerNumber.trim())) {
-            if (likeQuerySection.length() > 0) {
-                likeQuerySection += "and";
-            }
-            likeQuerySection += " customer_number like '%" + customer.customerNumber + "%'";
+
+            attributes.add(new Pair<>("customer_number", customer.customerNumber));
         }
-        return sql + likeQuerySection;
+        if(attributes.size() > 0){
+            sql += "where ";
+        }
+        for (int i = 0 ; i < attributes.size() ; ++i){
+            if(i != 0){
+                sql += "and";
+            }
+            sql += attributes.get(i).getKey() + " = ? ";
+        }
+        PreparedStatement preparedStatement = DataBaseManager.getConnection().prepareStatement(sql);
+        for (int i = 0 ; i < attributes.size() ; ++i){
+            preparedStatement.setString(i+1 , attributes.get(i).getValue());
+        }
+        return preparedStatement;
     }
 
     private RealCustomer getRealCustomer(ResultSet resultSet) throws SQLException {
@@ -134,13 +139,7 @@ public class RealCustomerCRUD implements CRUD<RealCustomer> {
     public List<RealCustomer> all(RealCustomer customer) {
         List<RealCustomer> realCustomers = new ArrayList<>();
         try {
-            Connection dataBaseConnection = DataBaseManager.getConnection();
-            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(
-                    "SELECT * FROM  real_customer where first_name like ? and last_name like ? and national_code like ? and customer_number like ?");
-            preparedStatement.setString(1 ,"%" + customer.firstName + "%");
-            preparedStatement.setString(2 , "%" + customer.lastName + "%");
-            preparedStatement.setString(3 , "%" + customer.nationalCode + "%");
-            preparedStatement.setString(4 , "%" + customer.customerNumber + "%");
+            PreparedStatement preparedStatement = generateFindQuery(customer);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
