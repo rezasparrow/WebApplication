@@ -88,7 +88,7 @@ public class LegalCustomerServlet extends HttpServlet {
         if (legalCustomers.size() == 0) {
             redirectToLegalCustomer(response);
         } else {
-            LegalCustomer legalCustomer= legalCustomers.get(0);
+            LegalCustomer legalCustomer = legalCustomers.get(0);
             PrintWriter printWriter = response.getWriter();
             HtmlGenerator htmlGenerator = new HtmlGenerator();
             htmlGenerator.addTitle("مشتری حقیقی");
@@ -143,8 +143,8 @@ public class LegalCustomerServlet extends HttpServlet {
                             "<td><a href=\"/LegalCustomer/delete?id=%s\">delete</a></td>\n" +
                             "</tr>"
                     , i + 1, legalCustomers.get(i).getCustomerNumber(), legalCustomers.get(i).companyName,
-                    legalCustomers.get(i).barCode ,
-                    legalCustomers.get(i).id, legalCustomers.get(i).id , 3 ,4,5,1);
+                    legalCustomers.get(i).barCode,
+                    legalCustomers.get(i).id, legalCustomers.get(i).id, 3, 4, 5, 1);
         }
         String body = "\n" +
                 "    <div class=\"content\">\n" +
@@ -213,16 +213,16 @@ public class LegalCustomerServlet extends HttpServlet {
     private void delete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
         List<Pair<String, String>> errors = LegalCustomerController.destroy(id);
-        if (errors.size() == 0) {
-            redirectToLegalCustomer(response);
-        }
+
+        redirectToLegalCustomer(response);
+
     }
 
     private void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String companyName = request.getParameter("companyName");
         String barCode = request.getParameter("barCode");
         String registrationDay = request.getParameter("registrationDay");
-        List<Pair<String, String>> errors = LegalCustomerController.save(companyName, barCode ,registrationDay);
+        List<Pair<String, String>> errors = LegalCustomerController.save(companyName, barCode, registrationDay);
         if (errors.size() == 0) {
             redirectToLegalCustomer(response);
         } else {
@@ -237,9 +237,9 @@ public class LegalCustomerServlet extends HttpServlet {
         String barCode = request.getParameter("barCode");
         String companyName = request.getParameter("companyName");
         String customerNumber = request.getParameter("customerNumber");
-        LegalCustomer legalCustomer = new LegalCustomer(0 ,customerNumber , companyName , barCode , null);
+        LegalCustomer legalCustomer = new LegalCustomer(0, customerNumber, companyName, barCode, null);
         legalCustomers = LegalCustomerController.find(legalCustomer);
-        indexView(response  , legalCustomers);
+        indexView(response, legalCustomers);
     }
 
     @Override
@@ -249,12 +249,12 @@ public class LegalCustomerServlet extends HttpServlet {
 
         if ("new".equalsIgnoreCase(action)) {
             newLegalCustomer(request, response, new ArrayList<Pair<String, String>>());
-        }  else if ("show".equalsIgnoreCase(action)) {
+        } else if ("show".equalsIgnoreCase(action)) {
             showView(request, response);
         } else if ("edit".equalsIgnoreCase(action)) {
             List<Pair<String, String>> errors = new ArrayList<>();
             editView(request, response, errors);
-        }else if ("delete".equalsIgnoreCase(action)) {
+        } else if ("delete".equalsIgnoreCase(action)) {
             delete(request, response);
         } else {
             List<LegalCustomer> legalCustomers = LegalCustomerController.all();

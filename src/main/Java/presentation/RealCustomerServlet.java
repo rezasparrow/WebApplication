@@ -24,9 +24,9 @@ import java.util.*;
 public class RealCustomerServlet extends HttpServlet {
 
 
-    private void redirectToRealCustomer(HttpServletResponse response){
+    private void redirectToRealCustomer(HttpServletResponse response) {
         response.setStatus(response.SC_MOVED_PERMANENTLY);
-        response.setHeader("Location" , "/RealCustomer");
+        response.setHeader("Location", "/RealCustomer");
     }
 
     private String getError(String key, List<Pair<String, String>> errors) {
@@ -45,17 +45,17 @@ public class RealCustomerServlet extends HttpServlet {
 
     private String partialForm(List<Pair<String, String>> errors, String action, RealCustomer customer) {
         List<FormElement> formElements = new ArrayList<FormElement>();
-        String birthday = "" ;
-        if(customer.birthDay == null){
+        String birthday = "";
+        if (customer.birthDay == null) {
             birthday = "";
-        }else{
+        } else {
             birthday = customer.birthDay.toString();
         }
         formElements.add(new FormElement("text", "firstName", "نام", customer.firstName, getError("firstName", errors)));
         formElements.add(new FormElement("text", "lastName", "نام خانوادگی", customer.lastName, getError("lastName", errors)));
         formElements.add(new FormElement("text", "fatherName", "نام پدر", customer.fatherName, getError("fatherName", errors)));
         formElements.add(new FormElement("text", "nationalCode", "کد ملی", customer.nationalCode, getError("nationalCode", errors)));
-        formElements.add(new FormElement("date", "birthday", "تاریخ تولد",birthday, getError("birthday", errors)));
+        formElements.add(new FormElement("date", "birthday", "تاریخ تولد", birthday, getError("birthday", errors)));
 
         return HtmlGenerator.generateForm(formElements, action);
     }
@@ -68,8 +68,8 @@ public class RealCustomerServlet extends HttpServlet {
 
         Date birthday = null;
         try {
-            String date = request.getParameter("birthday") ;
-            if(date != null && !date.isEmpty()) {
+            String date = request.getParameter("birthday");
+            if (date != null && !date.isEmpty()) {
                 birthday = df.parse(date);
             }
 
@@ -88,21 +88,20 @@ public class RealCustomerServlet extends HttpServlet {
     private void showView(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         List<RealCustomer> realCustomers = RealCustomerController.find(id);
-        if(realCustomers.size() == 0){
+        if (realCustomers.size() == 0) {
             redirectToRealCustomer(response);
-        }
-        else{
+        } else {
             RealCustomer realCustomer = realCustomers.get(0);
             PrintWriter printWriter = response.getWriter();
             HtmlGenerator htmlGenerator = new HtmlGenerator();
             htmlGenerator.addTitle("مشتری حقیقی");
             List<FormElement> formElements = new ArrayList<>();
-            List<Pair<String , String>>errors = new ArrayList<>();
+            List<Pair<String, String>> errors = new ArrayList<>();
             formElements.add(new FormElement("text", "firstName", "نام", realCustomer.firstName, getError("firstName", errors)));
             formElements.add(new FormElement("text", "lastName", "نام خانوادگی", realCustomer.lastName, getError("lastName", errors)));
             formElements.add(new FormElement("text", "fatherName", "نام پدر", realCustomer.fatherName, getError("fatherName", errors)));
             formElements.add(new FormElement("text", "nationalCode", "کد ملی", realCustomer.nationalCode, getError("nationalCode", errors)));
-            formElements.add(new FormElement("date", "birthday", "تاریخ تولد",realCustomer.birthDay.toString(), getError("birthday", errors)));
+            formElements.add(new FormElement("date", "birthday", "تاریخ تولد", realCustomer.birthDay.toString(), getError("birthday", errors)));
 
             htmlGenerator.addToBody(HtmlGenerator.showData(formElements));
             htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
@@ -110,23 +109,21 @@ public class RealCustomerServlet extends HttpServlet {
         }
     }
 
-    private void editView(HttpServletRequest request, HttpServletResponse response ,  List<Pair<String, String>> errors ) throws IOException {
-        String idString =  request.getParameter("id");
-        if (idString == null){
+    private void editView(HttpServletRequest request, HttpServletResponse response, List<Pair<String, String>> errors) throws IOException {
+        String idString = request.getParameter("id");
+        if (idString == null) {
             redirectToRealCustomer(response);
-        }
-        else{
+        } else {
             PrintWriter printWriter = response.getWriter();
             HtmlGenerator htmlGenerator = new HtmlGenerator();
-            int id =  Integer.parseInt(idString);
+            int id = Integer.parseInt(idString);
             htmlGenerator.addTitle("ویرایش مشتری حقیقی");
             List<RealCustomer> realCustomers = RealCustomerController.find(id);
-            if(realCustomers.size() == 0){
+            if (realCustomers.size() == 0) {
                 redirectToRealCustomer(response);
-            }
-            else {
+            } else {
 
-                htmlGenerator.addToBody(partialForm(errors ,"/RealCustomer/update?id=" + id,realCustomers.get(0)));
+                htmlGenerator.addToBody(partialForm(errors, "/RealCustomer/update?id=" + id, realCustomers.get(0)));
                 htmlGenerator.addToBody("<div > <a class=\"btn btn-sml\" href=\"/RealCustomer\">Back</a> </div>");
 
             }
@@ -151,7 +148,7 @@ public class RealCustomerServlet extends HttpServlet {
                             "<td><a href=\"/RealCustomer/edit?id=%s\">update</a></td>\n" +
                             "<td><a href=\"/RealCustomer/delete?id=%s\">delete</a></td>\n" +
                             "</tr>"
-                    , i+1, realCustomers.get(i).getCustomerNumber(), realCustomers.get(i).firstName,
+                    , i + 1, realCustomers.get(i).getCustomerNumber(), realCustomers.get(i).firstName,
                     realCustomers.get(i).lastName, realCustomers.get(i).fatherName
                     , realCustomers.get(i).nationalCode,
                     realCustomers.get(i).id, realCustomers.get(i).id);
@@ -160,7 +157,7 @@ public class RealCustomerServlet extends HttpServlet {
                 "    <div class=\"content\">\n" +
                 "\n" +
                 "        <a class=\"btn btn-sml\" href=\"/RealCustomer/new\"> تعریف مشتری حقیقی جدید</a>\n" +
-                "<form action=\"/RealCustomer/search\" method=\"post\">"+
+                "<form action=\"/RealCustomer/search\" method=\"post\">" +
                 "        <table class=\"table\">\n" +
                 "            <thead>\n" +
                 "            <tr>\n" +
@@ -235,10 +232,10 @@ public class RealCustomerServlet extends HttpServlet {
 
     private void delete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-        List<Pair<String , String>> errors = RealCustomerController.destroy(id);
-        if(errors.size() ==0){
-            redirectToRealCustomer(response);
-        }
+        List<Pair<String, String>> errors = RealCustomerController.destroy(id);
+
+        redirectToRealCustomer(response);
+
     }
 
     private void create(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -248,9 +245,9 @@ public class RealCustomerServlet extends HttpServlet {
         String nationalCode = request.getParameter("nationalCode");
         String birthday = request.getParameter("birthday");
         List<Pair<String, String>> errors = RealCustomerController.save(firstName, lastName, fatherName, nationalCode, birthday);
-        if(errors.size() == 0){
+        if (errors.size() == 0) {
             redirectToRealCustomer(response);
-        }else{
+        } else {
             newRealCustomer(request, response, errors);
 
         }
@@ -264,9 +261,9 @@ public class RealCustomerServlet extends HttpServlet {
         String fatherName = request.getParameter("fatherName");
         String nationalCode = request.getParameter("nationalCode");
         String customerNumber = request.getParameter("customerNumber");
-        RealCustomer realCustomer = new RealCustomer(0 , customerNumber , firstName ,lastName , fatherName , null , nationalCode);
+        RealCustomer realCustomer = new RealCustomer(0, customerNumber, firstName, lastName, fatherName, null, nationalCode);
         realCustomers = RealCustomerController.find(realCustomer);
-        indexView(response  , realCustomers);
+        indexView(response, realCustomers);
     }
 
     @Override
@@ -278,13 +275,13 @@ public class RealCustomerServlet extends HttpServlet {
         if ("new".equalsIgnoreCase(action)) {
             newRealCustomer(request, response, new ArrayList<Pair<String, String>>());
         } else if ("edit".equalsIgnoreCase(action)) {
-            List<Pair<String  , String>> errors =  new ArrayList<>();
-            editView(request, response , errors);
+            List<Pair<String, String>> errors = new ArrayList<>();
+            editView(request, response, errors);
         } else if ("show".equalsIgnoreCase(action)) {
             showView(request, response);
-        } else if ("delete".equalsIgnoreCase(action)){
-            delete(request , response);
-        }else {
+        } else if ("delete".equalsIgnoreCase(action)) {
+            delete(request, response);
+        } else {
             List<RealCustomer> realCustomers = realCustomerController.all();
             indexView(response, realCustomers);
         }
@@ -300,11 +297,9 @@ public class RealCustomerServlet extends HttpServlet {
             create(request, response);
         } else if ("search".equalsIgnoreCase(action)) {
             search(request, response);
-        }
-        else if ("update".equalsIgnoreCase(action)){
-            update(request , response);
-        }
-        else{
+        } else if ("update".equalsIgnoreCase(action)) {
+            update(request, response);
+        } else {
             redirectToRealCustomer(response);
         }
     }
@@ -316,13 +311,13 @@ public class RealCustomerServlet extends HttpServlet {
         String fatherName = request.getParameter("fatherName");
         String nationalCode = request.getParameter("nationalCode");
         String birthday = request.getParameter("birthday");
-        int id =  Integer.parseInt(request.getParameter("id"));
-        List<Pair<String, String>> errors =  RealCustomerController.update(id , firstName , lastName , fatherName , nationalCode , birthday);
+        int id = Integer.parseInt(request.getParameter("id"));
+        List<Pair<String, String>> errors = RealCustomerController.update(id, firstName, lastName, fatherName, nationalCode, birthday);
 
-        if(errors.size() == 0){
+        if (errors.size() == 0) {
             response.setStatus(response.SC_MOVED_PERMANENTLY);
-            response.setHeader("Location" , "/RealCustomer/show?id=" + id);
-        }else{
+            response.setHeader("Location", "/RealCustomer/show?id=" + id);
+        } else {
             editView(request, response, errors);
 
         }
