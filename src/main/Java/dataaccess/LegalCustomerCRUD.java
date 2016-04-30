@@ -1,6 +1,8 @@
 package dataaccess;
 
 
+import javafx.util.Pair;
+
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -88,7 +90,6 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
 
     }
 
-
     @Override
     public List<LegalCustomer> all() {
         List<LegalCustomer> legalCustomers = new ArrayList<>();
@@ -129,19 +130,12 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
         return legalCustomers;
     }
 
-
     @Override
     public List<LegalCustomer> all(LegalCustomer customer) {
         List<LegalCustomer> legalCustomers = new ArrayList<>();
 
         try {
-            Connection dataBaseConnection = DataBaseManager.getConnection();
-
-            PreparedStatement preparedStatement = dataBaseConnection.prepareStatement(
-                    "select * from legal_customer where company_name like ? and customer_number like ? and bar_code like ?");
-            preparedStatement.setString(1, "%" + customer.companyName + "%");
-            preparedStatement.setString(2, "%" + customer.customerNumber + "%");
-            preparedStatement.setString(3, "%" + customer.barCode + "%");
+            PreparedStatement preparedStatement = generateFindQuery(customer);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -161,6 +155,35 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
         return legalCustomers;
     }
 
+    private PreparedStatement generateFindQuery(LegalCustomer customer) throws SQLException {
+        String sql = "Select * from legal_customer ";
+        List<Pair<String , String>> attributes = new ArrayList<>();
+        if (!"".equals(customer.companyName.trim())) {
+            attributes.add(new Pair<>("company_name", customer.companyName));
+        }
+        if (!"".equals(customer.barCode.trim())) {
+            attributes.add(new Pair<>("bar_code", customer.barCode));
+        }
+        if (!"".equals(customer.customerNumber.trim())) {
+
+            attributes.add(new Pair<>("customer_number", customer.customerNumber));
+        }
+        if(attributes.size() > 0){
+            sql += "where ";
+        }
+        for (int i = 0 ; i < attributes.size() ; ++i){
+            if(i != 0){
+                sql += "and";
+            }
+            sql += attributes.get(i).getKey() + " = ? ";
+        }
+        PreparedStatement preparedStatement = DataBaseManager.getConnection().prepareStatement(sql);
+        for (int i = 0 ; i < attributes.size() ; ++i){
+            preparedStatement.setString(i+1 , attributes.get(i).getValue());
+        }
+        return preparedStatement;
+    }
+
 
     @Override
     public List<LegalCustomer> update(int id, LegalCustomer customer) throws SQLException {
@@ -170,7 +193,6 @@ public class LegalCustomerCRUD implements CRUD<LegalCustomer> {
         PreparedStatement statement = dataBaseConnection.prepareStatement(sqlCommand);
         statement.setInt(2, id);
         statement.setString(1, customer.barCode);
-//        statement.setString(2, customer.barCode);
         statement.executeUpdate();
 
 
